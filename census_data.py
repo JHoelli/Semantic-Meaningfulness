@@ -1,6 +1,7 @@
 from traceback import print_tb
 from IPython.display import display
 import os
+import pickle
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 
@@ -30,14 +31,15 @@ for a in categorial:
 dataframe=X_display
 dataframe['target']=y_display
 dataframe.to_csv('census.csv')
-continuous = dataframe.columns
-
+print(dataframe['target'])
+continuous = dataframe.drop(columns=['target']).columns
 
 dataset = CsvCatalog(file_path="census.csv",
                      continuous=continuous,
                      categorical=[],
                      immutables=[],
-                     target=['target'])
+                     encoding_method=None,
+                     target='target')
 
 scm = CausalModel("adult")
 #dataset = scm.generate_dataset(100)
@@ -56,26 +58,27 @@ ml_model.train(
     hidden_size=training_params["hidden_size"],
     force_train=True
 )
-from carla.models.negative_instances import predict_negative_instances
-from carla.recourse_methods.catalog.causal_recourse import (
-    CausalRecourse,
-    constraints,
-    samplers,
-)
+pickle.dump(ml_model,open('./models/census.pkl','wb'))
+#from carla.models.negative_instances import predict_negative_instances
+#from carla.recourse_methods.catalog.causal_recourse import (
+#    CausalRecourse,
+#    constraints,
+#    samplers,
+#)
 
 # get factuals
-factuals = predict_negative_instances(ml_model, dataset.df)
-test_factual = factuals.iloc[:1]
+#factuals = predict_negative_instances(ml_model, dataset.df)
+#test_factual = factuals.iloc[:1]
 
-hyperparams = {
-    "optimization_approach": "brute_force",
-    "num_samples": 2,
-    "scm": scm,
-    "constraint_handle": constraints.point_constraint,
-    "sampler_handle": samplers.sample_true_m0,
-}
-cfs = CausalRecourse(ml_model, hyperparams).get_counterfactuals(test_factual)
+#hyperparams = {
+#    "optimization_approach": "brute_force",
+#    "num_samples": 2,
+#    "scm": scm,
+#    "constraint_handle": constraints.point_constraint,
+#    "sampler_handle": samplers.sample_true_m0,
+#}
+#cfs = CausalRecourse(ml_model, hyperparams).get_counterfactuals(test_factual)
 
-display(cfs)
+#display(cfs)
 
-print(cfs)
+#print(cfs)

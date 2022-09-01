@@ -1,7 +1,7 @@
 """
 Based on https://github.com/amirhk/recourse/blob/master/loadSCM.py
 """
-from carla.data.load_scm.distributions import MixtureOfGaussians, Normal
+from carla.data.load_scm.distributions import MixtureOfGaussians, Normal,Uniform
 
 def adult_model():
     print('Adult Model Initiate')
@@ -20,15 +20,15 @@ def adult_model():
     print('Structural Equation Finished')
     structural_equations_ts = structural_equations_np
     noises_distributions = {
-        "u1": MixtureOfGaussians([0.5, 0.5], [-2, +1], [1.5, 1]),
-        "u2": Normal(0, 1),
-        "u3": Normal(0, 1),
-        "u4": Normal(0, 1),
-        "u5": Normal(0, 1),
-        "u6": Normal(0, 1),
-        "u7": Normal(0, 1),
-        "u8": Normal(0, 1),
-        "u9": Normal(0, 1),
+        "u1": Uniform(0,1),
+        "u2": Uniform(0,41),
+        "u3": Uniform(17, 90),
+        "u4": Uniform(0, 5),
+        "u5": Uniform(1, 99),
+        "u6": Uniform(0, 99999),
+        "u7": Uniform(0, 15),
+        "u8": Uniform(0, 14),
+        "u9": Uniform(0, 1),
     }
     print('Noise Distribution Finished')
     continuous = list(structural_equations_np.keys()) + list(

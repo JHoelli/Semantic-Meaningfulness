@@ -107,7 +107,8 @@ class MLModelCatalog(MLModel):
                 self._feature_input_order = list(np.sort(data.continuous))
             else:
                 self._feature_input_order = list(
-                    np.sort(data.continuous + encoded_features)
+                    #TODO comment out
+                    np.sort(data.continuous)#+ encoded_features)
                 )
 
         if load_online:
