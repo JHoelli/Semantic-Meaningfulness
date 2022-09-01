@@ -87,6 +87,7 @@ def get_discretized_action_sets(
 
     # create grid for continuous variables
     for i, node in enumerate(intervenable_nodes["continuous"]):
+        print('node',node)
         min_value = mean_values[node] - 2 * (mean_values[node] - min_values[node])
         max_value = mean_values[node] + 2 * (max_values[node] - mean_values[node])
         grid = list(
@@ -95,7 +96,7 @@ def get_discretized_action_sets(
         grid.append(None)
         grid = list(dict.fromkeys(grid))
         possible_actions_per_node.append(grid)
-
+    print('Possible Actions',possible_actions_per_node)
     # create grid for categorical variables
     for node in intervenable_nodes["categorical"]:
         # TODO only binary categories supported right now
@@ -103,25 +104,29 @@ def get_discretized_action_sets(
         grid.append(None)
         grid = list(dict.fromkeys(grid))
         possible_actions_per_node.append(grid)
-
+    
     all_action_tuples = list(itertools.product(*possible_actions_per_node))
+    print('tuples', all_action_tuples)
     all_action_tuples = [
         _tuple
         for _tuple in all_action_tuples
         if len([element for element in _tuple if element is not None])
         < max_intervention_cardinality
     ]
-
+    print('Start Concat')
     # get all node names
     nodes = np.concatenate(
         [intervenable_nodes["continuous"], intervenable_nodes["categorical"]]
     )
+    print('Finished Condat')
     # create from list and tuple a dict: {nodes[0]: tuple[0], nodes[1]: tuple[1], etc.}
     all_action_sets = [dict(zip(nodes, _tuple)) for _tuple in all_action_tuples]
+    print('all', all_action_sets)
 
     valid_action_sets = []
     for action_set in all_action_sets:
         valid_action_set = {k: v for k, v in action_set.items() if v is not None}
         valid_action_sets.append(valid_action_set)
+    print('valid', valid_action_set)
 
     return valid_action_sets
