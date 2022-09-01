@@ -1,10 +1,10 @@
 import numpy as np
 
-from .scm import sanity_3_lin, census_model
+from .scm import sanity_3_lin, adult_model
 
 scm_dict = {
     "sanity-3-lin": sanity_3_lin,
-    "census":census_model
+    "adult":adult_model
 }
 
 

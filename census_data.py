@@ -1,5 +1,8 @@
 from traceback import print_tb
 from IPython.display import display
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -8,26 +11,30 @@ from carla.data.causal_model import CausalModel
 import shap
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
-
+import numpy as np 
 # Load Data 
 X,y = shap.datasets.adult()
 X_display,y_display = shap.datasets.adult(display=True) # human readable feature values
+#X_display=X_display.fillna(0)
 
 #TODO this needs to be chnaged --> Ordinal Encoding !
-categorial = []
+categorial = ['Country','Workclass','Marital Status', 'Occupation','Relationship', 'Race', 'Sex']
 for a in categorial:
     enc= OrdinalEncoder()
-    X_display[a]= enc.fit_transform(X_display[a].reshape(1,-1))
+    enc.fit(np.array(X_display[a].values).reshape(-1, 1))
+    temp= enc.transform(np.array(X_display[a].values).reshape(-1, 1))
+   
+    X_display[a]= temp.reshape(-1)
 
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=7)
 
 scm = CausalModel("census")
-dataset = scm.generate_dataset(10000)
+#dataset = scm.generate_dataset(100)
 from carla.models.catalog import MLModelCatalog
+from carla.data.catalog.online_catalog import OnlineCatalog
+dataset = OnlineCatalog('adult')
+#categorial = ['Country','Workclass','Marital Status', 'Occupation','Relationship', 'Race', 'Sex']
 
-
-training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
+training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 2]}
 
 ml_model = MLModelCatalog(
     dataset, model_type="ann", load_online=False, backend="pytorch"
@@ -48,11 +55,11 @@ from carla.recourse_methods.catalog.causal_recourse import (
 
 # get factuals
 factuals = predict_negative_instances(ml_model, dataset.df)
-test_factual = factuals.iloc[:5]
+test_factual = factuals.iloc[:1]
 
 hyperparams = {
     "optimization_approach": "brute_force",
-    "num_samples": 10,
+    "num_samples": 2,
     "scm": scm,
     "constraint_handle": constraints.point_constraint,
     "sampler_handle": samplers.sample_true_m0,

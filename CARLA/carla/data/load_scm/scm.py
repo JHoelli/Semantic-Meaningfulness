@@ -3,8 +3,8 @@ Based on https://github.com/amirhk/recourse/blob/master/loadSCM.py
 """
 from carla.data.load_scm.distributions import MixtureOfGaussians, Normal
 
-def census_model():
-    print('Census Model Initiate')
+def adult_model():
+    print('Adult Model Initiate')
     structural_equations_np = {
         "x1": lambda n_samples: n_samples,
         "x2": lambda n_samples: n_samples,
@@ -14,7 +14,7 @@ def census_model():
         "x6": lambda n_samples, x1, x2, x3: -0.01 * x1+ 0.03 * x2 - 0.01*x3 + n_samples,
         "x7": lambda n_samples: n_samples,
         "x8": lambda n_samples: n_samples,
-        "x9": lambda n_samples, x4,x5, x6, x3, x7, x8: 0.05 * x4 + 0.03 * x6+ 0.04 * x3-0.04*x7-0.02 * x8 + n_samples,
+        "x9": lambda n_samples, x4,x5, x6, x3, x7, x8:0*x5+0.05 * x4 + 0.03 * x6+ 0.04 * x3-0.04*x7-0.02 * x8 + n_samples,
 
     }
     print('Structural Equation Finished')
