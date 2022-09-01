@@ -2,7 +2,7 @@
 Based on https://github.com/amirhk/recourse/blob/master/loadSCM.py
 """
 from carla.data.load_scm.distributions import Bernoulli, MixtureOfGaussians, Normal,Uniform, Bernoulli, Gamma
-
+import numpy as np
 def german_credit():
     e_0 = -1
     e_G = 0.5
