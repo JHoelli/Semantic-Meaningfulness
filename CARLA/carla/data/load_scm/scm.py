@@ -1,7 +1,94 @@
 """
 Based on https://github.com/amirhk/recourse/blob/master/loadSCM.py
 """
-from carla.data.load_scm.distributions import Bernoulli, MixtureOfGaussians, Normal,Uniform, Bernoulli
+from carla.data.load_scm.distributions import Bernoulli, MixtureOfGaussians, Normal,Uniform, Bernoulli, Gamma
+
+def german_credit():
+    e_0 = -1
+    e_G = 0.5
+    e_A = 1
+
+    l_0 = 1
+    l_A = .01
+    l_G = 1
+
+    d_0 = -1
+    d_A = .1
+    d_G = 2
+    d_L = 1
+
+    i_0 = -4
+    i_A = .1
+    i_G = 2
+    i_E = 10
+    i_GE = 1
+
+    s_0 = -4
+    s_I = 1.5
+
+    structural_equations_np = {
+      # Gender
+      'x1': lambda n_samples,: n_samples,
+      # Age
+      'x2': lambda n_samples,: -35 + n_samples,
+      # Education
+      'x3': lambda n_samples, x1, x2 : -0.5 + (1 + np.exp(-(e_0 + e_G * x1 + e_A * (1 + np.exp(- .1 * (x2)))**(-1) + n_samples)))**(-1),
+      # Loan amount
+      'x4': lambda n_samples, x1, x2 :  l_0 + l_A * (x2 - 5) * (5 - x2) + l_G * x1 + n_samples,
+      # Loan duration
+      'x5': lambda n_samples, x1, x2, x4 : d_0 + d_A * x2 + d_G * x1 + d_L * x4 + n_samples,
+      # Income
+      'x6': lambda n_samples, x1, x2, x3 : i_0 + i_A * (x2 + 35) + i_G * x1 + i_GE * x1 * x3 + n_samples,
+      # Savings
+      'x7': lambda n_samples, x6 : s_0 + s_I * (x6 > 0) * x6 + n_samples,
+    }
+    structural_equations_ts = {
+      # Gender
+      'x1': lambda n_samples,: n_samples,
+      # Age
+      'x2': lambda n_samples,: -35 + n_samples,
+      # Education
+      'x3': lambda n_samples, x1, x2 : -0.5 + (1 + torch.exp(-(e_0 + e_G * x1 + e_A * (1 + torch.exp(- .1 * (x2)))**(-1) + n_samples)))**(-1),
+      # Loan amount
+      'x4': lambda n_samples, x1, x2 :  l_0 + l_A * (x2 - 5) * (5 - x2) + l_G * x1 + n_samples,
+      # Loan duration
+      'x5': lambda n_samples, x1, x2, x4 : d_0 + d_A * x2 + d_G * x1 + d_L * x4 + n_samples,
+      # Income
+      'x6': lambda n_samples, x1, x2, x3 : i_0 + i_A * (x2 + 35) + i_G * x1 + i_GE * x1 * x3 + n_samples,
+      # Savings
+      'x7': lambda n_samples, x6 : s_0 + s_I * (x6 > 0) * x6 + n_samples,
+    }
+    noises_distributions = {
+      # Gender
+      'u1': Bernoulli(0.5),
+      # Age
+      'u2': Gamma(10, 3.5),
+      # Education
+      'u3': Normal(0, 0.5**2),
+      # Loan amount
+      'u4': Normal(0, 2**2),
+      # Loan duration
+      'u5': Normal(0, 3**2),
+      # Income
+      'u6': Normal(0, 2**2),
+      # Savings
+      'u7': Normal(0, 5**2),
+    }
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical =[]
+    immutables =[]
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
+
+
 
 def adult_model():
     #Taken from https://github.com/amirhk/recourse/blob/master/loadSCM.py
