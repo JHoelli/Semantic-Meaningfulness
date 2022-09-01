@@ -19,6 +19,18 @@ from carla.data.catalog import CsvCatalog
 X_display,y_display = shap.datasets.adult(display=True) # human readable feature values
 print(X_display.columns)
 #X_display=X_display.fillna(0)
+mapping_dict={
+    "x1": "sex",
+    "x2": "race",
+    "x3": "age",
+    "x4": "relationship",
+    "x5": "hours_per-week",
+    "x6": "capital gain",
+    "x7": "education",
+    "x8": "occupation",
+    "x9": "target",
+
+}
 categorial = ['Workclass', 'Education-Num', 'Marital Status', 'Occupation',
        'Relationship', 'Race', 'Sex', 'Country']#['Country','Workclass','Marital Status', 'Occupation','Relationship', 'Race', 'Sex']
 for a in categorial:
