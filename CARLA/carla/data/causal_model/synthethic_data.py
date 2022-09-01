@@ -82,8 +82,8 @@ def _create_synthetic_data(scm, num_samples):
     scale = 2.5 / np.mean(np.abs(np.dot(endogenous_variables, w)))
     predictions = 1 / (1 + np.exp(-scale * np.dot(endogenous_variables, w)))
 
-    if not 0.20 < np.std(predictions) < 0.42:
-        raise ValueError(f"std of labels is strange: {np.std(predictions)}")
+    #if not 0.20 < np.std(predictions) < 0.42:
+    #    raise ValueError(f"std of labels is strange: {np.std(predictions)}")
 
     # sample labels from class probabilities in predictions
     uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)

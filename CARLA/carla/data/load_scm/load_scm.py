@@ -12,9 +12,7 @@ scm_dict = {
 
 def _remove_prefix(node):
     """replaces e.g. x101 or u101 with 101"""
-    print('Remove Prefix')
     assert node[0] == "x" or node[0] == "u"
-    print('End Prefix')
     return node[1:]
 
 
@@ -30,7 +28,7 @@ def load_scm_equations(scm_class: str):
         categorical,
         immutables,
     ) = scm_dict[scm_class]()
-    print('Finished Loading')
+
     ###########################
     #       some checks       #
     ###########################
