@@ -55,27 +55,44 @@ def adult_model():
 def nutrition_model():
     print('Adult Model Initiate')
     structural_equations_np = {
+        #Age
         "x1": lambda n_samples: n_samples,
+        #Sex
         "x2": lambda n_samples: n_samples,
-        "x3": lambda n_samples: n_samples,
-        "x4": lambda n_samples, x1: 0.02 * x1 + n_samples,
-        "x5": lambda n_samples, x1: 0.01* x1 + n_samples,
-        "x6": lambda n_samples, x1, x2, x3: -0.01 * x1+ 0.03 * x2 - 0.01*x3 + n_samples,
+        #BloodPressure
+        "x3": lambda n_samples,x1: 0.02* x1+ n_samples,
+        #SBP
+        "x4": lambda n_samples, x3: 0.12 * x3+ n_samples,
+        #PulsePresure
+        "x5": lambda n_samples, x4: 0.02* x4 + n_samples,
+        #Inflamantion
+        "x6": lambda n_samples: n_samples,
+        #Povertyn index
         "x7": lambda n_samples: n_samples,
-        "x8": lambda n_samples: n_samples,
-        "x9": lambda n_samples, x4,x5, x6, x3, x7, x8:0*x5+0.05 * x4 + 0.03 * x6+ 0.04 * x3-0.04*x7-0.02 * x8 + n_samples,
+        #Sedimation rae
+        "x8": lambda n_samples, x7:0.03*x7+ n_samples,
+        "x9": lambda n_samples, x1,x2,x4,x5,x7,x8: -0.21*x2+-0.59 * x1 + 0.03 * x8- 0.04* x7+0.02*x5+ 0.1*x4+ n_samples,
 
     }
     print('Structural Equation Finished')
     structural_equations_ts = structural_equations_np
     noises_distributions = {
-        "u1": MixtureOfGaussians([0.5, 0.5], [-2, +1], [1.5, 1]),
+        #25
+        #Age
+        "u1": Normal(25, 1),
+        #Sex --> Uniform 
         "u2": Normal(0, 1),
+        #Bloodpressure
         "u3": Normal(0, 1),
-        "u4": Normal(0, 1),
-        "u5": Normal(0, 1),
+        #SBP
+        "u4": Normal(80, 1),
+        #Pulse Pressure
+        "u5": Normal(10, 1),
+        #Inflamation
         "u6": Normal(0, 1),
+        #Poverty
         "u7": Normal(0, 1),
+        #Sedimation
         "u8": Normal(0, 1),
         "u9": Normal(0, 1),
     }

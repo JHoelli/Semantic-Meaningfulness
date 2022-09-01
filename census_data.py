@@ -13,12 +13,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
 import numpy as np 
 # Load Data 
-X,y = shap.datasets.adult()
-X_display,y_display = shap.datasets.adult(display=True) # human readable feature values
-#X_display=X_display.fillna(0)
 
-#TODO this needs to be chnaged --> Ordinal Encoding !
-categorial = ['Country','Workclass','Marital Status', 'Occupation','Relationship', 'Race', 'Sex']
+from carla.data.catalog import CsvCatalog
+X_display,y_display = shap.datasets.adult(display=True) # human readable feature values
+print(X_display.columns)
+#X_display=X_display.fillna(0)
+categorial = ['Workclass', 'Education-Num', 'Marital Status', 'Occupation',
+       'Relationship', 'Race', 'Sex', 'Country']#['Country','Workclass','Marital Status', 'Occupation','Relationship', 'Race', 'Sex']
 for a in categorial:
     enc= OrdinalEncoder()
     enc.fit(np.array(X_display[a].values).reshape(-1, 1))
@@ -26,13 +27,22 @@ for a in categorial:
    
     X_display[a]= temp.reshape(-1)
 
+dataframe=X_display
+dataframe['target']=y_display
+dataframe.to_csv('census.csv')
+continuous = dataframe.columns
 
-scm = CausalModel("census")
+
+dataset = CsvCatalog(file_path="census.csv",
+                     continuous=continuous,
+                     categorical=[],
+                     immutables=[],
+                     target=['target'])
+
+scm = CausalModel("adult")
 #dataset = scm.generate_dataset(100)
 from carla.models.catalog import MLModelCatalog
-from carla.data.catalog.online_catalog import OnlineCatalog
-dataset = OnlineCatalog('adult')
-#categorial = ['Country','Workclass','Marital Status', 'Occupation','Relationship', 'Race', 'Sex']
+
 
 training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 2]}
 
