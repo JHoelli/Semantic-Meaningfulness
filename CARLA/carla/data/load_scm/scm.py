@@ -212,12 +212,12 @@ def nutrition_model():
     )
     categorical =[]# ['x8', 'relationship', 'x2', 'sex']
     immutables =[]# ['x3','sex']
-    print((structural_equations_np,
-        structural_equations_ts,
-        noises_distributions,
-        continuous,
-        categorical,
-        immutables,))
+    #print((structural_equations_np,
+    #    structural_equations_ts,
+    #    noises_distributions,
+    #    continuous,
+     #   categorical,
+     #   immutables,))
     return (
         structural_equations_np,
         structural_equations_ts,

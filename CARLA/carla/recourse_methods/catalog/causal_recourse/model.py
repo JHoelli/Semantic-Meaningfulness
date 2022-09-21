@@ -91,7 +91,7 @@ class CausalRecourse(RecourseMethod):
     }
 
     def __init__(self, mlmodel: MLModelCatalog, hyperparams: Dict):
-        print('Initialization Starting')
+        #print('Initialization Starting')
 
         supported_backends = ["tensorflow", "pytorch"]
         if mlmodel.backend not in supported_backends:
@@ -112,7 +112,7 @@ class CausalRecourse(RecourseMethod):
 
         self._constraint_handle = checked_hyperparams["constraint_handle"]
         self._sampler_handle = checked_hyperparams["sampler_handle"]
-        print('Initialization Finished')
+        #print('Initialization Finished')
 
     def get_intervenable_nodes(self) -> dict:
         intervenable_nodes = {
@@ -142,26 +142,26 @@ class CausalRecourse(RecourseMethod):
     def compute_optimal_action_set(
         self, factual_instance, constraint_handle, sampling_handle
     ):
-        print(1)
+        #print(1)
         intervenables_nodes = self.get_intervenable_nodes()
-        print(2)
+        #print(2)
         min_values, max_values = self._get_range_values()
-        print(3)
+        #print(3)
         mean_values = self._get_mean_values()
-        print(4)
+        #print(4)
         min_cost = np.infty
         min_action_set = {}
-        print(5)
+        #print(5)
         if self._optimization_approach == "brute_force":
             valid_action_sets = get_discretized_action_sets(
                 intervenables_nodes, min_values, max_values, mean_values
             )
-            print(6)
+            #print(6)
             # we need to make sure that actions don't go out of bounds [0, 1]
             if isinstance(self._dataset.scaler, preprocessing.MinMaxScaler):
                 out_of_bounds_idx = []
                 for i, action_set in enumerate(valid_action_sets):
-                    print(7)
+                    #print(7)
                     instance = _series_plus_dict(factual_instance, action_set)
                     if not np.all((1 > instance.values) & (instance.values > 0)):
                         out_of_bounds_idx.append(i)
@@ -172,7 +172,7 @@ class CausalRecourse(RecourseMethod):
                 ]
 
             for action_set in valid_action_sets:
-                print(8)
+                #print(8)
                 if constraint_handle(
                     self._scm,
                     factual_instance,
@@ -180,7 +180,7 @@ class CausalRecourse(RecourseMethod):
                     sampling_handle,
                     self._mlmodel,
                 ):
-                    print(9)
+                    #print(9)
                     cost = action_set_cost(
                         factual_instance, action_set, max_values - min_values
                     )
@@ -193,22 +193,22 @@ class CausalRecourse(RecourseMethod):
         else:
             raise ValueError("optimization approach not recognized")
 
-        # print("MIN COST", min_cost, "ACTION SET", min_action_set)
+        # #print("MIN COST", min_cost, "ACTION SET", min_action_set)
 
         return min_action_set, min_cost
 
     def get_counterfactuals(self, factuals: pd.DataFrame):
-        print('Start get CF')
+        #print('Start get CF')
         factual_df = factuals.drop(columns=self._dataset.target)
 
         cfs = []
         # actions = []
         for index, factual_instance in factual_df.iterrows():
-            print('index',index)
+            #print('index',index)
             min_action_set, _ = self.compute_optimal_action_set(
                 factual_instance, self._constraint_handle, self._sampler_handle
             )
-            print('computation finished')
+            #print('computation finished')
             cf = _series_plus_dict(factual_instance, min_action_set)
             # min_action_set["cost"] = min_cost
             # actions.append(min_action_set)
@@ -216,6 +216,6 @@ class CausalRecourse(RecourseMethod):
 
         # convert to dataframe
         cfs = pd.DataFrame(cfs)
-        print('Fisish get CF')
+        #print('Fisish get CF')
         # action_df = pd.DataFrame(actions)
         return cfs
