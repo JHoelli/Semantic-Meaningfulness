@@ -30,7 +30,7 @@ def _add_noise(signal, noise):
     return signal
 
 
-def _create_synthetic_data(scm, num_samples):
+def _create_synthetic_data(scm, num_samples,fuzzy=False):
     """
     Generate synthetic data.
 
@@ -86,7 +86,10 @@ def _create_synthetic_data(scm, num_samples):
     #    raise ValueError(f"std of labels is strange: {np.std(predictions)}")
 
     # sample labels from class probabilities in predictions
-    uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)
+    if fuzzy:
+        uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)
+    else: 
+        uniform_rv = np.repeat(0.5,(endogenous_variables.shape[0], 1))
     labels = uniform_rv < predictions
     labels = pd.DataFrame(data=labels, columns={"label"})
 
@@ -111,11 +114,12 @@ class ScmDataset(Data):
         self,
         scm,
         size: int,
+        fuzzy: bool, 
     ):
         # TODO setup normalization with generate_dataset in CausalModel class
         self.scm = scm
         self.name = scm.scm_class
-        raw, noise = _create_synthetic_data(scm, num_samples=size)
+        raw, noise = _create_synthetic_data(scm, num_samples=size,fuzzy=True)
 
         train_raw, test_raw = train_test_split(raw)
         train_noise = noise.iloc[train_raw.index]

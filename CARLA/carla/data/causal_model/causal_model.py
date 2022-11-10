@@ -163,7 +163,7 @@ class CausalModel:
             .symmetric_difference(set([node]))
         )
 
-    def generate_dataset(self, size: int) -> ScmDataset:
+    def generate_dataset(self, size: int,fuzzy:bool) -> ScmDataset:
         """Generates a Data object using the structural causal equations
 
         Parameters
@@ -176,7 +176,7 @@ class CausalModel:
         ScmDataset
             a Data object filled with samples
         """
-        return ScmDataset(self, size)
+        return ScmDataset(self, size, fuzzy)
 
     def visualize_graph(self, experiment_folder_name=None):
         """
