@@ -8,7 +8,7 @@ import pandas as pd
 
 def get_pred_from_causal(scm, values, cf_label, mapping_dict, threshold):
     '''
-    Infers the prediction from the causal model
+    Infers the prediction from the causal model. Sets Exogenous variable to counterfactual value.
     Attributes: 
         scm: structural causal model 
         values: The counterfactual 
@@ -24,6 +24,9 @@ def get_pred_from_causal(scm, values, cf_label, mapping_dict, threshold):
         if not node[0] == "x":
             raise ValueError
         return "u" + _get_node_id(node)
+    print('exogenous')
+    for node in scm.get_topological_ordering("exogenous"):
+        print(node)
     exogenous_variables = np.concatenate(
         [
             #np.array(scm.noise_distributions[node].sample(1)).reshape(-1, 1)
@@ -45,8 +48,10 @@ def get_pred_from_causal(scm, values, cf_label, mapping_dict, threshold):
             )
         )
     )
+    print('finish exogenous')
     # used later to make sure parents are populated when computing children
     endogenous_variables.loc[:] = np.nan
+    print('endogenous')
     for node in scm.get_topological_ordering("endogenous"):
         # print(node)
         parents = scm.get_parents(node)
@@ -59,22 +64,24 @@ def get_pred_from_causal(scm, values, cf_label, mapping_dict, threshold):
             exogenous_variables[_get_noise_string(node)],
             *[endogenous_variables[p] for p in parents],
         )
+    print('finish endogenous')
     # fix a hyperplane
     w = np.ones((endogenous_variables.shape[1], 1))
     # get the average scale of (w^T)*X, this depends on the scale of the data
     scale = 2.5 / np.mean(np.abs(np.dot(endogenous_variables, w)))
     predictions = 1 / (1 + np.exp(-scale * np.dot(endogenous_variables, w)))
-    print('predictions', predictions)
+    #print('predictions', predictions)
 
     uniform_rv = threshold
-    # uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)
+    #uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)
     labels = int(uniform_rv < predictions)
-    
     return labels
 
 def get_pred_from_causal_v2(scm, values, cf_label, mapping_dict, threshold):
     '''
     Infers the prediction from the causal model. This is implemented accoring to Karimi et al .: 
+    Assumption: Couterfactual returns a valued for every endogenous variable ! 
+    #TODO does this Assumption make sense, Anyway Returns currently the same numbers as the above version. 
     Attributes: 
         scm: structural causal model 
         values: The counterfactual 
@@ -82,61 +89,30 @@ def get_pred_from_causal_v2(scm, values, cf_label, mapping_dict, threshold):
         mapping_dict: variable name mapping betwenn CF and causal model
     Returns Label
     '''
-    values['target']=cf_label
-    #print(values)
-    def _get_noise_string(node):
-        def _get_node_id(node):
-            return node[1:]
-        if not node[0] == "x":
-            raise ValueError
-        return "u" + _get_node_id(node)
-    exogenous_variables = np.concatenate(
-        [
-            #np.array(scm.noise_distributions[node].sample(1)).reshape(-1, 1)
-            np.array(values[mapping_dict[node]]).reshape(-1, 1)
-            for node in scm.get_topological_ordering("exogenous")
-        ],
-        axis=1,
-    )
-    exogenous_variables = pd.DataFrame(
-        exogenous_variables, columns=scm.get_topological_ordering("exogenous")
-    )
 
-    endogenous_variables =exogenous_variables.copy() # np.array(values[mapping_dict[node]]).reshape(-1, 1)
-    endogenous_variables = endogenous_variables.rename(
-        columns=dict(
-            zip(
-                scm.get_topological_ordering("exogenous"),
-                scm.get_topological_ordering("endogenous"),
-            )
-        )
-    )
-    # used later to make sure parents are populated when computing children
-    endogenous_variables.loc[:] = np.nan
+    endogenous_variables = values
+    print(type(endogenous_variables))
+    print(endogenous_variables)
     for node in scm.get_topological_ordering("endogenous"):
-        # print(node)
+        print(node)
         parents = scm.get_parents(node)
-        if endogenous_variables.loc[:, list(parents)].isnull().values.any():
-            raise ValueError(
-                "parents in endogenous_variables should already be occupied"
+        print(parents)
+        if node not in values:
+            '''Assumption Output Node value is not contained in CF '''
+            output_node = node
+            value=scm.structural_equations_np[node](
+                *[endogenous_variables[p] for p in parents],
             )
-        #print(_get_noise_string(node))
-        endogenous_variables[node] = scm.structural_equations_np[node](
-            exogenous_variables[_get_noise_string(node)],
-            *[endogenous_variables[p] for p in parents],
-        )
-    # fix a hyperplane
-    w = np.ones((endogenous_variables.shape[1], 1))
-    # get the average scale of (w^T)*X, this depends on the scale of the data
-    scale = 2.5 / np.mean(np.abs(np.dot(endogenous_variables, w)))
-    predictions = 1 / (1 + np.exp(-scale * np.dot(endogenous_variables, w)))
-    print('predictions', predictions)
-
+            print('probability',value)
+            endogenous_variables[node]= value[0] 
+    
+    predictions= endogenous_variables[output_node]
     uniform_rv = threshold
-    # uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)
     labels = int(uniform_rv < predictions)
     
     return labels
+
+
 class Sematic(Evaluation):
     """
     Semnatic Evaluation Metric.
@@ -166,7 +142,7 @@ class Sematic(Evaluation):
             cf_label=1
         else:
             cf_label=0
-        causal_label = get_pred_from_causal(self.causal_graph, counterfactuals, cf_label, self.mapping_dict, threshold)
+        causal_label = get_pred_from_causal_v2(self.causal_graph, counterfactuals, cf_label, self.mapping_dict, threshold)
         if cf_label == causal_label:
             return pd.DataFrame([[1]], columns=["semantic"])
         else: 
