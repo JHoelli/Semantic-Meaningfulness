@@ -10,7 +10,7 @@ def sanity_3_lin_output():
         "x2": lambda n_samples, x1: -x1 + n_samples,
         "x3": lambda n_samples, x1, x2: 0.5 * (0.1 * x1 + 0.5 * x2) + n_samples,
         #TODO Does it make sense to exclude n samples here ? 
-        "x4":lambda  x1, x2,x3: 1/ (1 + np.exp(- 2.5 / np.mean(np.abs(np.dot([x1,x2,x3], np.ones((3, 1))))))* np.dot([x1,x2,x3], np.ones((3, 1)))),
+        "x4":lambda  x1, x2,x3:1 / (1 + np.exp(-(2.5 / np.mean(np.abs(np.dot([round(x1,8),round(x2,8),round(x3,8)], np.ones((3, 1)))))) * np.dot([round(x1,8),round(x2,8),round(x3,8)], np.ones((3, 1))))), #1/ (1 + np.exp(- 2.5 / np.mean(np.abs(np.dot([x1,x2,x3], np.ones((3, 1))))))* np.dot([x1,x2,x3], np.ones((3, 1)))),
     }
     structural_equations_ts = structural_equations_np
     noises_distributions = {
