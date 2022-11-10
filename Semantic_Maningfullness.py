@@ -81,7 +81,8 @@ def get_pred_from_causal_v2(scm, values, cf_label, mapping_dict, threshold):
     '''
     Infers the prediction from the causal model. This is implemented accoring to Karimi et al .: 
     Assumption: Couterfactual returns a valued for every endogenous variable ! 
-    #TODO does this Assumption make sense, Anyway Returns currently the same numbers as the above version. 
+    Assumption: Output Node value is not contained in CF!
+    #TODO does this Assumption make sense?
     Attributes: 
         scm: structural causal model 
         values: The counterfactual 
@@ -91,12 +92,8 @@ def get_pred_from_causal_v2(scm, values, cf_label, mapping_dict, threshold):
     '''
 
     endogenous_variables = values
-    print(type(endogenous_variables))
-    print(endogenous_variables)
     for node in scm.get_topological_ordering("endogenous"):
-        print(node)
         parents = scm.get_parents(node)
-        print(parents)
         if node not in values:
             '''Assumption Output Node value is not contained in CF '''
             output_node = node
@@ -123,10 +120,11 @@ class Sematic(Evaluation):
     Returns: Consistency
     """
 
-    def __init__(self, ml_model, causal_graph, mapping_dict):
+    def __init__(self, ml_model, causal_graph, mapping_dict, threshold=0.5):
         self.ml_model=ml_model
         self.causal_graph=causal_graph
         self.mapping_dict=mapping_dict
+        self.threshold=threshold
     def get_evaluation(self,factuals: np.ndarray, counterfactuals: np.ndarray):
         # generate data
         cf_label = self.ml_model.predict(np.array(counterfactuals.values).reshape(-1, counterfactuals.values.shape[-1]))
@@ -135,14 +133,14 @@ class Sematic(Evaluation):
         factuals_label = self.ml_model.predict(np.array(factuals.values).reshape(-1, factuals.values.shape[-1]))
         print('factuals_label', factuals_label)
 
-        threshold = np.random.rand(1, 1)
-        print('threshold', threshold)
+        #threshold = np.random.rand(1, 1)
+        #print('threshold', threshold)
 
-        if cf_label[0][0] > threshold: # > 0.5: 
+        if cf_label[0][0] > self.threshold: # > 0.5: 
             cf_label=1
         else:
             cf_label=0
-        causal_label = get_pred_from_causal_v2(self.causal_graph, counterfactuals, cf_label, self.mapping_dict, threshold)
+        causal_label = get_pred_from_causal_v2(self.causal_graph, counterfactuals, cf_label, self.mapping_dict, self.threshold)
         if cf_label == causal_label:
             return pd.DataFrame([[1]], columns=["semantic"])
         else: 
