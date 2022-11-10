@@ -3,6 +3,36 @@ Based on https://github.com/amirhk/recourse/blob/master/loadSCM.py
 """
 from carla.data.load_scm.distributions import Bernoulli, MixtureOfGaussians, Normal,Uniform, Bernoulli, Gamma
 import numpy as np
+
+def sanity_3_lin_output():
+    structural_equations_np = {
+        "x1": lambda n_samples: n_samples,
+        "x2": lambda n_samples, x1: -x1 + n_samples,
+        "x3": lambda n_samples, x1, x2: 0.5 * (0.1 * x1 + 0.5 * x2) + n_samples,
+        #TODO Does it make sense to exclude n samples here ? 
+        "x4":lambda  x1, x2,x3: 1/ (1 + np.exp(- 2.5 / np.mean(np.abs(np.dot([x1,x2,x3], np.ones((3, 1))))))* np.dot([x1,x2,x3], np.ones((3, 1)))),
+    }
+    structural_equations_ts = structural_equations_np
+    noises_distributions = {
+        "u1": MixtureOfGaussians([0.5, 0.5], [-2, +1], [1.5, 1]),
+        "u2": Normal(0, 1),
+        "u3": Normal(0, 1),
+        "u4": Normal(0, 1),
+    }
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical = []
+    immutables = []
+
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
 def german_credit():
     e_0 = -1
     e_G = 0.5
@@ -48,7 +78,7 @@ def german_credit():
       # Age
       'x2': lambda n_samples,: -35 + n_samples,
       # Education
-      'x3': lambda n_samples, x1, x2 : -0.5 + (1 + torch.exp(-(e_0 + e_G * x1 + e_A * (1 + torch.exp(- .1 * (x2)))**(-1) + n_samples)))**(-1),
+      'x3': lambda n_samples, x1, x2 : -0.5 + (1 + np.exp(-(e_0 + e_G * x1 + e_A * (1 + np.exp(- .1 * (x2)))**(-1) + n_samples)))**(-1),
       # Loan amount
       'x4': lambda n_samples, x1, x2 :  l_0 + l_A * (x2 - 5) * (5 - x2) + l_G * x1 + n_samples,
       # Loan duration
