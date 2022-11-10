@@ -86,10 +86,14 @@ def _create_synthetic_data(scm, num_samples,fuzzy=False):
     #    raise ValueError(f"std of labels is strange: {np.std(predictions)}")
 
     # sample labels from class probabilities in predictions
+    print('fuzzy', fuzzy)
     if fuzzy:
         uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)
+        #print('randsom',uniform_rv.shape)
     else: 
-        uniform_rv = np.repeat(0.5,(endogenous_variables.shape[0], 1))
+        uniform_rv = np.ones((endogenous_variables.shape[0], 1))*0.5
+        #print('threshold',uniform_rv.shape)
+        #print('threshold',uniform_rv)
     labels = uniform_rv < predictions
     labels = pd.DataFrame(data=labels, columns={"label"})
 
@@ -119,7 +123,7 @@ class ScmDataset(Data):
         # TODO setup normalization with generate_dataset in CausalModel class
         self.scm = scm
         self.name = scm.scm_class
-        raw, noise = _create_synthetic_data(scm, num_samples=size,fuzzy=True)
+        raw, noise = _create_synthetic_data(scm, num_samples=size,fuzzy=fuzzy)
 
         train_raw, test_raw = train_test_split(raw)
         train_noise = noise.iloc[train_raw.index]
