@@ -128,10 +128,10 @@ class Sematic(Evaluation):
     def get_evaluation(self,factuals: np.ndarray, counterfactuals: np.ndarray):
         # generate data
         cf_label = self.ml_model.predict(np.array(counterfactuals.values).reshape(-1, counterfactuals.values.shape[-1]))
-        print('cflabel', cf_label)
+        print('cflabel from DL model', cf_label)
 
         factuals_label = self.ml_model.predict(np.array(factuals.values).reshape(-1, factuals.values.shape[-1]))
-        print('factuals_label', factuals_label)
+        print('factuals_label from DL model', factuals_label)
 
         #threshold = np.random.rand(1, 1)
         #print('threshold', threshold)
