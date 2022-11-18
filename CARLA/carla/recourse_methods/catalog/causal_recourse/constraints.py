@@ -28,6 +28,7 @@ def point_constraint(scm, factual_instance, action_set, sampling_handle, mlmodel
         return False
     #Samples dataset from Original Instance
     print('Action Set', action_set)
+    print('Original', factual_instance)
     sampler = Sampler(scm)
     cf_instance = sampler.sample(1, factual_instance, action_set, sampling_handle)
     print('cf Inatance from Constraint', cf_instance)

@@ -135,11 +135,12 @@ class Sematic(Evaluation):
 
         #threshold = np.random.rand(1, 1)
         #print('threshold', threshold)
-
-        if cf_label[0][0] > self.threshold: # > 0.5: 
-            cf_label=1
-        else:
-            cf_label=0
+        cf_label=cf_label.round()
+        print('Round',cf_label)
+        #if cf_label[0][0] > self.threshold: # > 0.5: 
+        #    cf_label=1
+        #else:
+        #    cf_label=0
         causal_label = get_pred_from_causal_v2(self.causal_graph, counterfactuals, cf_label, self.mapping_dict, self.threshold)
         if cf_label == causal_label:
             return pd.DataFrame([[1]], columns=["semantic"])
