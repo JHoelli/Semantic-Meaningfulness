@@ -63,6 +63,7 @@ def _create_synthetic_data(scm, num_samples,fuzzy=False):
             )
         )
     )
+    leng=0
     # used later to make sure parents are populated when computing children
     endogenous_variables.loc[:] = np.nan
     for node in scm.get_topological_ordering("endogenous"):
@@ -75,13 +76,20 @@ def _create_synthetic_data(scm, num_samples,fuzzy=False):
             exogenous_variables[_get_noise_string(node)],
             *[endogenous_variables[p] for p in parents],
         )
+        leng+=1
 
     # fix a hyperplane
-    w = np.ones((endogenous_variables.shape[1], 1))
-    # get the average scale of (w^T)*X, this depends on the scale of the data
-    scale = 2.5 / np.mean(np.abs(np.dot(endogenous_variables, w)))
-    predictions = 1 / (1 + np.exp(-scale * np.dot(endogenous_variables, w)))
-
+    print(leng)
+    if leng==3:
+        w = np.ones((endogenous_variables.shape[1], 1))
+        # get the average scale of (w^T)*X, this depends on the scale of the data
+        scale = 2.5 / np.mean(np.abs(np.dot(endogenous_variables, w)))
+        predictions = 1 / (1 + np.exp(-scale * np.dot(endogenous_variables, w)))
+    elif leng==7:
+        #w = np.ones((endogenous_variables.shape[0], 1))
+        #predictions= 1 / (1 + np.exp(-0.3/(-np.dot(endogenous_variables['x4'],w)-np.dot(endogenous_variables['x5'],w)+np.dot(endogenous_variables['x6'],w)+np.dot(endogenous_variables['x7'],w)+np.dot(endogenous_variables['x6'],w)*np.dot(endogenous_variables['x7'],w)) ) )
+         print(endogenous_variables['x4'].shape)
+         predictions= 1 / (1 + np.exp(-0.3/(-endogenous_variables['x4']-endogenous_variables['x5']+endogenous_variables['x6']+endogenous_variables['x7']+endogenous_variables['x6']*endogenous_variables['x7']) ) )
     #if not 0.20 < np.std(predictions) < 0.42:
     #    raise ValueError(f"std of labels is strange: {np.std(predictions)}")
 
@@ -92,8 +100,11 @@ def _create_synthetic_data(scm, num_samples,fuzzy=False):
         #print('randsom',uniform_rv.shape)
     else: 
         uniform_rv = np.ones((endogenous_variables.shape[0], 1))*0.5
-        #print('threshold',uniform_rv.shape)
+    print('threshold',uniform_rv.shape)
+    print('predictions',predictions)
         #print('threshold',uniform_rv)
+    if type(predictions)==pd.DataFrame or type(predictions)==pd.Series:
+        predictions=predictions.values.reshape(-1,1)
     labels = uniform_rv < predictions
     labels = pd.DataFrame(data=labels, columns={"label"})
 

@@ -205,18 +205,18 @@ class CausalRecourse(RecourseMethod):
         # actions = []
         for index, factual_instance in factual_df.iterrows():
 
-            print('FACTUAL INSTANCE NO', index)
+            #print('FACTUAL INSTANCE NO', index)
             #print('index',index)
             min_action_set, _ = self.compute_optimal_action_set(
                 factual_instance, self._constraint_handle, self._sampler_handle
             )
-            print('min_action_set', min_action_set)
+            #print('min_action_set', min_action_set)
             #print('computation finished')
             cf = _series_plus_dict(factual_instance, min_action_set)
             # min_action_set["cost"] = min_cost
             # actions.append(min_action_set)
-            print('CF TO Factual instacne No', index)
-            print(cf)
+            #print('CF TO Factual instacne No', index)
+            #print(cf)
             cfs.append(cf)
 
         # convert to dataframe
