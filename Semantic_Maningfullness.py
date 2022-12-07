@@ -106,6 +106,7 @@ def get_pred_from_causal_v2(scm, values, cf_label, mapping_dict, threshold):
     predictions= endogenous_variables[output_node]
     uniform_rv = threshold
     labels = int(uniform_rv < predictions)
+    print('labels', labels)
     
     return labels
 
@@ -125,8 +126,13 @@ class Sematic(Evaluation):
         self.causal_graph=causal_graph
         self.mapping_dict=mapping_dict
         self.threshold=threshold
-    def get_evaluation(self,factuals: np.ndarray, counterfactuals: np.ndarray):
-        # generate data
+    def get_evaluation(self,factuals, counterfactuals):
+        try:
+            print('try')
+            factuals= factuals.loc[:,~factuals.columns.isin(['label'])]
+        except: 
+            print('except')
+            pass
         cf_label = self.ml_model.predict(np.array(counterfactuals.values).reshape(-1, counterfactuals.values.shape[-1]))
         print('cflabel from DL model', cf_label)
 
@@ -141,8 +147,16 @@ class Sematic(Evaluation):
         #    cf_label=1
         #else:
         #    cf_label=0
-        causal_label = get_pred_from_causal_v2(self.causal_graph, counterfactuals, cf_label, self.mapping_dict, self.threshold)
-        if cf_label == causal_label:
-            return pd.DataFrame([[1]], columns=["semantic"])
-        else: 
-            return pd.DataFrame([[0]], columns=["semantic"])
+        semantic=[]
+        for a in counterfactuals.index:
+            causal_label = get_pred_from_causal_v2(self.causal_graph, counterfactuals.iloc[a], cf_label[a], self.mapping_dict, self.threshold)
+            print('cf_label',cf_label[a])
+            print('causal_label', causal_label)
+            if cf_label[a] == causal_label:
+                semantic.append([1])
+            else:
+                semantic.append([0])
+
+        print(pd.DataFrame(semantic, columns=["semantic"]))
+        return pd.DataFrame(semantic, columns=["semantic"])
+     
