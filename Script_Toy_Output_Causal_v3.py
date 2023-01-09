@@ -97,3 +97,7 @@ evaluation_measures = [
 # now run all implemented measurements and create a
 # DataFrame which consists of all results
 results = benchmark_wachter.run_benchmark(evaluation_measures)
+
+mean= np.mean(results)
+std= np.std(results)
+print(f'Semantic results {mean} +/- {std}')
