@@ -85,12 +85,6 @@ mapping_dict={
 # now you can decide if you want to run all measurements
 # or just specific ones.
 evaluation_measures = [
-    #evaluation_catalog.YNN(benchmark.mlmodel, {"y": 5, "cf_label": 1}),
-    #evaluation_catalog.Distance(benchmark.mlmodel),
-    #evaluation_catalog.SuccessRate(),
-    #evaluation_catalog.Redundancy(benchmark.mlmodel, {"cf_label": 1}),
-    #evaluation_catalog.ConstraintViolation(benchmark_wachter.mlmodel),
-    #evaluation_catalog.AvgTime({"time": benchmark_wachter.timer}),
     Sematic(ml_model,scm_output,mapping_dict),    
 ]
 
