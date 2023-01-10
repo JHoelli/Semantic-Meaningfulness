@@ -24,6 +24,7 @@ def point_constraint(scm, factual_instance, action_set, sampling_handle, mlmodel
     """
 
     # if action set is empty, return false as we don't flip the label with a factual instance
+    print('Normal CONSTRAINTS')
     if not bool(action_set):
         return False
     #Samples dataset from Original Instance
