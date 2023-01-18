@@ -101,10 +101,10 @@ def get_pred_from_causal_v2(scm, values, cf_label, mapping_dict, threshold):
                 *[endogenous_variables[p] for p in parents],
             )
             print('probability',value)
-            try:
-                endogenous_variables[node]= value[0] 
-            except:
-                endogenous_variables[node]= value 
+            #try:
+            #    endogenous_variables[node]= value[0] 
+            #except:
+            endogenous_variables[node]= value 
     
     predictions= endogenous_variables[output_node]
     uniform_rv = threshold

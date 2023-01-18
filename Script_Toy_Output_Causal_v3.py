@@ -46,7 +46,7 @@ ml_model.train(
 from carla.models.negative_instances import predict_negative_instances
 # get factuals
 factuals = predict_negative_instances(ml_model, dataset.df)
-test_factual_with_labels = factuals.iloc[:10].reset_index(drop=True)
+test_factual_with_labels = factuals.iloc[:1].reset_index(drop=True)
 test_factual=test_factual_with_labels.copy()
 
 print(test_factual)
@@ -59,7 +59,7 @@ from carla.recourse_methods.catalog.causal_recourse import (
 )
 hyperparams = {
     "optimization_approach": "brute_force",
-    "num_samples": 10,
+    "num_samples": 1, #used to be 10
     "scm": scm,
     "constraint_handle": constraints.point_constraint,
     "sampler_handle": samplers.sample_true_m0,
