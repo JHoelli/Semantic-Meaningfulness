@@ -14,6 +14,7 @@ from carla.recourse_methods.catalog.causal_recourse import (
     constraints,
     samplers,
 )
+#from carla.data.causal_model.synthethic_data import SCMDataset
 from carla.recourse_methods import GrowingSpheres
 from carla import Benchmark
 import numpy as np 
@@ -27,15 +28,21 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-def wachter(ml_model, name):
+def wachter(ml_model,scm, name):
     '''
-    #TODO Test
+    Calls Wachter Recourse. 
+    Attributes: 
+        ml_model caral.XXX : Classifier
+        name str: name of Model
+
+    Return: 
+        carla.recourse...
     '''
     hyperparams = {"loss_type": "BCE"}
     return recourse_catalog.wachter.model.Wachter(ml_model, hyperparams)
 
 
-def causal_recourse(ml_model,name):
+def causal_recourse(ml_model,scm,name):
     '''
     Calls causal recourse. 
     Attributes: 
@@ -55,13 +62,13 @@ def causal_recourse(ml_model,name):
     causal_recourse = CausalRecourse(ml_model, hyperparams)
     return causal_recourse
 
-def growingspheres(model):
+def growingspheres(model,scm,name):
     '''
     #TODO This has to be tested
     '''
     return GrowingSpheres(model)
 
-def focus(model):
+def focus(model,scm,name):
     hyperparams = {
     "optimizer": "adam",
     "lr": 0.001,
@@ -75,7 +82,7 @@ def focus(model):
 
     return recourse_catalog.FOCUS(model, hyperparams)
 
-def cchvae(mlmodel, name):
+def cchvae(mlmodel,scm, name):
     '''
     #TODO This has to be tested
     '''
@@ -173,8 +180,11 @@ def data(name, not_causal=True):
         # generate data
         dataset = scm.generate_dataset(10000, False)
         print(f'./data/{name}/{name}.csv')
-        dataset.df.to_csv(f'./data/{name}/{name}.csv')
-        #pickle.dump(dataset, open(f'./data/{name}/{name}.pkl','wb'))
+        dataset.df.to_csv(f'./data/{name}/{name}.csv', index=False)
+        #pickle.dump(dataset.train_raw, open(f'./data/{name}/{name}_train_raw.pkl','wb'))
+        #pickle.dump(dataset.test_raw, open(f'./data/{name}/{name}_test_raw.pkl','wb'))
+        #pickle.dump(dataset.raw, open(f'./data/{name}/{name}_raw.pkl','wb'))
+        #pickle.dump(dataset.noise, open(f'./data/{name}/{name}_noise.pkl','wb'))
         if not_causal:
             dataset = pd.read_csv(f'./data/{name}/{name}.csv')
             #TODO Better way for defining continous varaibles ?
@@ -187,7 +197,7 @@ def data(name, not_causal=True):
                      scaling_method='Identity')
     else: 
         if not_causal:
-            dataset = pd.read_csv(f'./data/{name}/{name}.csv', index_col=0)
+            dataset = pd.read_csv(f'./data/{name}/{name}.csv')
             #TODO Better way for defining continous varaibles ?
             continuous_wachter = dataset.drop(columns=['label']).columns
             dataset = CsvCatalog(file_path=f'./data/{name}/{name}.csv',
@@ -197,9 +207,16 @@ def data(name, not_causal=True):
                      target='label',
                      scaling_method='Identity')
         else: 
-            # TODO Load https://github.com/carla-recourse/CARLA/blob/9595d4f6609ff604bc22d9b8e6cd728ecf18737b/carla/data/causal_model/synthethic_data.py#L98
-            pass
-        #dataset = pickle.load(open(f'./data/{name}/{name}.pkl','rb'))
+
+            dataset = pd.read_csv(f'./data/{name}/{name}.csv')
+            continuous_wachter = dataset.drop(columns=['label']).columns
+            #TODO Does Scaling Method Idendity make sense ? 
+            dataset = CsvCatalog(file_path=f'./data/{name}/{name}.csv',
+                     continuous=continuous_wachter,
+                     categorical=[],
+                     immutables=[],
+                     target='label',
+                     scaling_method='Identity')
     
     return dataset, scm , scm_output
 
@@ -227,9 +244,8 @@ if __name__ =='__main__':
 
     print(f'Parameters : {args.data}, {args.model}, {args.CF}. {args.n_eval}, {args.semantic_measure}')   
     not_causal=True
-    if 'causal' in {args.CF}:
+    if 'causal' in f'{args.CF}':
         not_causal=False
-
     #Load Dataset    
     dataset, scm, scm_output=data(args.data, not_causal)
     ml_model= locals()[f"{args.model}"](dataset,args.data)
@@ -240,7 +256,7 @@ if __name__ =='__main__':
     test_factual=test_factual_with_labels.copy()
 
     #Recourse Method
-    recourse= locals()[f"{args.CF}"](ml_model,args.data)
+    recourse= locals()[f"{args.CF}"](ml_model,scm,args.data)
     
     # Benchmarking
     benchmark_wachter = Benchmark(ml_model, recourse, test_factual)
