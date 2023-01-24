@@ -140,11 +140,7 @@ def Dice(mlmodel, scm, name, data):
 def FeatureTweak(mlmodel, scm, name, data):
     return recourse_catalog.FeatureTweak(mlmodel)
 
-def Face(mlmodel, scm, name, data):
-    '''
-    Currently Ignored, needs Immutable Features to be set !
-    '''
-    return recourse_catalog.Face(mlmodel, hyperparams={"mode":"knn","fraction":0.5})
+
 
 def Cruds(mlmodel, scm, name, data):
     #TODO PARAms
@@ -156,7 +152,11 @@ def Cruds(mlmodel, scm, name, data):
             "batch_size": 32,
         },})
 
-
+#def Face(mlmodel, scm, name, data):
+#    '''
+#    Currently Ignored, needs Immutable Features to be set !
+#    '''
+#    return recourse_catalog.Face(mlmodel, hyperparams={"mode":"knn","fraction":0.5})
 #def Roar(mlmodel, scm, name, data):
 #TODO not found in library
 #    return Roar(mlmodel)
@@ -331,6 +331,9 @@ if __name__ =='__main__':
     results = benchmark_wachter.run_benchmark(evaluation_measures)
     if not os.path.isdir(f'./Results/{args.data}'):
         os.mkdir(f'./Results/{args.data}')
+    results['model']=np.repeat(args.model, len(results.index))
+    results['CF']=np.repeat(args.CF, len(results.index))
+    results['dataset']=np.repeat(args.data, len(results.index))
     results.to_csv(f'./Results/{args.data}/Results_{args.model}_{args.CF}.csv')
 
     summary=pd.DataFrame([])
