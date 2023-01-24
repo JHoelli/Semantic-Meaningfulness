@@ -150,8 +150,9 @@ class Sematic(Evaluation):
                 #print('INDEX ', a)
                 #TODO is supposed to calculate relationshipwise and full 
                 causal_label = get_pred_from_causal(self.causal_graph_full, counterfactuals.iloc[a], cf_label[a], self.threshold)
+            #    print(counterfactuals.iloc[a])
                 num.append(relationship_check(scm=self.causal_graph_small, values=counterfactuals.iloc[a]))
-                #print('num',num)
+            #    print('num',num)
                 
                 #print('cf_label',cf_label[a])
                 #print('causal_label', causal_label)
@@ -159,7 +160,7 @@ class Sematic(Evaluation):
                     semantic.append([1])
                 else:
                     semantic.append([0])
-                #print('semantic',semantic)
+            #    print('semantic',semantic)
             #print(np.vstack([semantic,num]))
             return pd.DataFrame(np.vstack([semantic,num]).reshape(-1,2), columns=["semantic","correct_relationships"])
 

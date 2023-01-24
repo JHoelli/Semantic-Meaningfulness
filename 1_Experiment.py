@@ -3,14 +3,18 @@ import importlib
 import Semantic_Meaningfulness_v2
 from Semantic_Meaningfulness_v2 import Sematic
 importlib.reload(Semantic_Meaningfulness_v2)
+import carla.recourse_methods.catalog as recourse_catalog
 from carla.data.causal_model import CausalModel
 from carla.models.catalog import MLModelCatalog
 from carla.models.negative_instances import predict_negative_instances
+from carla.data.catalog import CsvCatalog
+#from carla.recourse_methods.catalog import recourse_catalog
 from carla.recourse_methods.catalog.causal_recourse import (
     CausalRecourse,
     constraints,
     samplers,
 )
+from carla.recourse_methods import GrowingSpheres
 from carla import Benchmark
 import numpy as np 
 import pandas as pd
@@ -23,10 +27,24 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-def wachter():
-    pass
+def wachter(ml_model, name):
+    '''
+    #TODO Test
+    '''
+    hyperparams = {"loss_type": "BCE"}
+    return recourse_catalog.wachter.model.Wachter(ml_model, hyperparams)
+
 
 def causal_recourse(ml_model,name):
+    '''
+    Calls causal recourse. 
+    Attributes: 
+        ml_model caral.XXX : Classifier
+        name str: name of Model
+
+    Return: 
+        carla.recourse...
+    '''
     hyperparams = {
     "optimization_approach": "brute_force",
     "num_samples": 10, #used to be 10
@@ -37,13 +55,91 @@ def causal_recourse(ml_model,name):
     causal_recourse = CausalRecourse(ml_model, hyperparams)
     return causal_recourse
 
-def logistic_regression():
-    pass
+def growingspheres(model):
+    '''
+    #TODO This has to be tested
+    '''
+    return GrowingSpheres(model)
+
+def focus(model):
+    hyperparams = {
+    "optimizer": "adam",
+    "lr": 0.001,
+    "n_class": 2,
+    "n_iter": 1000,
+    "sigma": 1.0,
+    "temperature": 1.0,
+    "distance_weight": 0.01,
+    "distance_func": "l1",
+    }
+
+    return recourse_catalog.FOCUS(model, hyperparams)
+
+def cchvae(mlmodel, name):
+    '''
+    #TODO This has to be tested
+    '''
+    hyperparams = {
+    "data_name": name,
+    "n_search_samples": 100,
+    "p_norm": 1,
+    "step": 0.1,
+    "max_iter": 1000,
+    "clamp": True,
+    "binary_cat_features": True,
+    "vae_params": {
+        "layers": [len(ml_model.feature_input_order), 512, 256, 8],
+        "train": True,
+        "lambda_reg": 1e-6,
+        "epochs": 5,
+        "lr": 1e-3,
+        "batch_size": 32,
+        },
+        }
+
+    cchvae = recourse_catalog.CCHVAE(mlmodel, hyperparams)
+    return cchvae
+
+def linear(dataset, name):
+    '''
+    Linear Model.
+    Attributes: 
+        dataset carla.XXX : data to train on 
+        name str: dataset name 
+    Returns: 
+        carla.XXX
+    '''
+    training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
+    ml_model = MLModelCatalog(
+    dataset, model_type="linear", load_online=False, backend="pytorch"
+    )
+    ml_model.train(
+        learning_rate=training_params["lr"],
+        epochs=training_params["epochs"],
+        batch_size=training_params["batch_size"],
+        hidden_size=training_params["hidden_size"],
+        force_train=True
+    )
+
+    return ml_model
+
+def forest(dataset, name):
+    '''
+    TODO Test
+    '''
+    ml_model = MLModelCatalog(dataset, "forest", backend="sklearn", load_online=False)
+    ml_model.train(max_depth=2, n_estimators=5, force_train=True)
+    return ml_model
+
 
 def MLP(dataset, name):
     '''
     Load and return MLP. 
-    #TODO How ro save those ? 
+    Attributes: 
+        dataset carla.XXX : data to train on 
+        name str: dataset name 
+    Returns: 
+        carla.XXX
     '''
     training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
 
@@ -59,10 +155,9 @@ def MLP(dataset, name):
     )
     return ml_model
 
-def data(name):
+def data(name, not_causal=True):
     '''
     Load and return Toy Dataset.
-    #TODO Train Test / Split
     Attribute: 
         name str: Name of the Dataset. 
 
@@ -80,13 +175,36 @@ def data(name):
         print(f'./data/{name}/{name}.csv')
         dataset.df.to_csv(f'./data/{name}/{name}.csv')
         #pickle.dump(dataset, open(f'./data/{name}/{name}.pkl','wb'))
+        if not_causal:
+            dataset = pd.read_csv(f'./data/{name}/{name}.csv')
+            #TODO Better way for defining continous varaibles ?
+            continuous_wachter = dataset.drop(columns=['label']).columns
+            dataset = CsvCatalog(file_path=f'./data/{name}/{name}.csv',
+                     continuous=continuous_wachter,
+                     categorical=[],
+                     immutables=[],
+                     target='label',
+                     scaling_method='Identity')
     else: 
-        dataset = pd.read_csv(f'./data/{name}/{name}.csv')
+        if not_causal:
+            dataset = pd.read_csv(f'./data/{name}/{name}.csv', index_col=0)
+            #TODO Better way for defining continous varaibles ?
+            continuous_wachter = dataset.drop(columns=['label']).columns
+            dataset = CsvCatalog(file_path=f'./data/{name}/{name}.csv',
+                     continuous=continuous_wachter,
+                     categorical=[],
+                     immutables=[],
+                     target='label',
+                     scaling_method='Identity')
+        else: 
+            # TODO Load https://github.com/carla-recourse/CARLA/blob/9595d4f6609ff604bc22d9b8e6cd728ecf18737b/carla/data/causal_model/synthethic_data.py#L98
+            pass
         #dataset = pickle.load(open(f'./data/{name}/{name}.pkl','rb'))
+    
     return dataset, scm , scm_output
 
 if __name__ =='__main__':
-    import Experiment
+    #import 1_Experiment
     #SEED Setting
     seed = 42
     np.random.seed(seed)
@@ -108,9 +226,12 @@ if __name__ =='__main__':
     #print(locals()["MLP"]())
 
     print(f'Parameters : {args.data}, {args.model}, {args.CF}. {args.n_eval}, {args.semantic_measure}')   
+    not_causal=True
+    if 'causal' in {args.CF}:
+        not_causal=False
 
     #Load Dataset    
-    dataset, scm, scm_output=data(args.data)
+    dataset, scm, scm_output=data(args.data, not_causal)
     ml_model= locals()[f"{args.model}"](dataset,args.data)
 
     # get factuals
@@ -130,7 +251,7 @@ if __name__ =='__main__':
     results = benchmark_wachter.run_benchmark(evaluation_measures)
     if not os.path.isdir(f'./Results/{args.data}'):
         os.mkdir(f'./Results/{args.data}')
-    results.to_csv(f'./Results/{args.data}/Results_{args.data}.csv')
+    results.to_csv(f'./Results/{args.data}/Results_{args.model}_{args.CF}.csv')
 
     summary=pd.DataFrame([])
     summary['model']=[f'{args.model}']
@@ -140,7 +261,7 @@ if __name__ =='__main__':
     summary['semantic_std']=np.std(results['semantic'])
     summary['relationship_mean']=np.mean(results['correct_relationships'])
     summary['relationship_std']=np.std(results['correct_relationships'])
-    summary.to_csv(f'./Results/{args.data}/summary_{args.data}_{args.model}_{args.CF}.csv')
+    summary.to_csv(f'./Results/{args.data}/summary_{args.model}_{args.CF}.csv')
 
     #TODO save THIS
     #mean= np.mean(results)
