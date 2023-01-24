@@ -9,6 +9,7 @@ from carla.models.catalog import MLModelCatalog
 from carla.models.negative_instances import predict_negative_instances
 from carla.data.catalog import CsvCatalog
 #from carla.recourse_methods.catalog import recourse_catalog
+#from carla.recourse_methods.catalog.roar.model import Roar
 from carla.recourse_methods.catalog.causal_recourse import (
     CausalRecourse,
     constraints,
@@ -136,27 +137,38 @@ def Clue(mlmodel, scm, name, data):
 def Dice(mlmodel, scm, name, data):
     return recourse_catalog.Dice(ml_model, hyperparams=None)
 
-def Face(mlmodel, scm, name, data):
-    #TODO This is not working
-    return recourse_catalog.Face(mlmodel, hyperparams={"mode":"knn","fraction":0.5})
-
-def Cruds(mlmodel, scm, name, data):
-    #TODO WHere ?
-    pass
-
-def Revise(mlmodel, scm, name, data):
-     #TODO WHere ?
-    return recourse_catalog.Revise(mlmodel, data)
-
-def Roar(mlmodel, scm, name, data):
-    return recourse_catalog.Roar(mlmodel)
-  
 def FeatureTweak(mlmodel, scm, name, data):
     return recourse_catalog.FeatureTweak(mlmodel)
 
-# Revise
-# FeatureTweaks x Forest
-#ROAR
+def Face(mlmodel, scm, name, data):
+    '''
+    Currently Ignored, needs Immutable Features to be set !
+    '''
+    return recourse_catalog.Face(mlmodel, hyperparams={"mode":"knn","fraction":0.5})
+
+def Cruds(mlmodel, scm, name, data):
+    #TODO PARAms
+    return recourse_catalog.crud.model.CRUD(mlmodel, hyperparams={"data_name":name,"vae_params": {
+            "layers": [data.df.shape[-1]-1,64,2],
+            "train": True,
+            "epochs": 5,
+            "lr": 1e-3,
+            "batch_size": 32,
+        },})
+
+
+#def Roar(mlmodel, scm, name, data):
+#TODO not found in library
+#    return Roar(mlmodel)
+
+#def Revise(mlmodel, scm, name, data):
+     #TODO WHere ? --Throws errie
+#    return recourse_catalog.Revise(mlmodel, data)
+
+
+
+
+  
 
 
 def linear(dataset, name):
