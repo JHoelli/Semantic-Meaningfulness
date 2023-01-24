@@ -1,0 +1,5 @@
+,semantic,correct_relationships,model,CF,dataset
+0,0.0,0.0,MLP,actionable_recourse,credit
+1,0.0,0.0,MLP,actionable_recourse,credit
+2,0.8571428571428571,0.8571428571428571,MLP,actionable_recourse,credit
+3,0.8571428571428571,0.8571428571428571,MLP,actionable_recourse,credit

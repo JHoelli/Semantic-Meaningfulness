@@ -1,0 +1,6 @@
+,semantic,correct_relationships,model,CF,dataset
+0,1.0,1.0,forest,FeatureTweak,credit
+1,0.0,1.0,forest,FeatureTweak,credit
+2,1.0,0.8571428571428571,forest,FeatureTweak,credit
+3,0.8571428571428571,0.8571428571428571,forest,FeatureTweak,credit
+4,0.8571428571428571,0.8571428571428571,forest,FeatureTweak,credit
