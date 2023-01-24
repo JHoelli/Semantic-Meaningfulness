@@ -116,6 +116,11 @@ class Sematic(Evaluation):
         except: 
             #print('except')
             pass
+        print(counterfactuals.values.shape)
+        print(counterfactuals)
+        counterfactuals.dropna(axis=0, how='all', inplace=True)
+        counterfactuals = counterfactuals.reset_index(drop=True)
+        print(counterfactuals)
         cf_label = self.ml_model.predict(np.array(counterfactuals.values).reshape(-1, counterfactuals.values.shape[-1]))
         #print('cflabel from DL model', cf_label)
 

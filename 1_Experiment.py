@@ -28,7 +28,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-def wachter(ml_model,scm, name):
+def wachter(ml_model,scm, name, data):
     '''
     Calls Wachter Recourse. 
     Attributes: 
@@ -42,7 +42,7 @@ def wachter(ml_model,scm, name):
     return recourse_catalog.wachter.model.Wachter(ml_model, hyperparams)
 
 
-def causal_recourse(ml_model,scm,name):
+def causal_recourse(ml_model,scm,name, data):
     '''
     Calls causal recourse. 
     Attributes: 
@@ -62,13 +62,28 @@ def causal_recourse(ml_model,scm,name):
     causal_recourse = CausalRecourse(ml_model, hyperparams)
     return causal_recourse
 
-def growingspheres(model,scm,name):
+def growingspheres(model,scm,name, data):
     '''
-    #TODO This has to be tested
+    Calls growingspheres. 
+    Attributes: 
+        ml_model caral.XXX : Classifier
+        name str: name of Model
+
+    Return: 
+        carla.recourse...
     '''
     return GrowingSpheres(model)
 
-def focus(model,scm,name):
+def focus(model,scm,name, data):
+    '''
+    Calls focous, only works with XGBoost Backend. 
+    Attributes: 
+        ml_model caral.XXX : Classifier
+        name str: name of Model
+
+    Return: 
+        carla.recourse...
+    '''
     hyperparams = {
     "optimizer": "adam",
     "lr": 0.001,
@@ -82,7 +97,7 @@ def focus(model,scm,name):
 
     return recourse_catalog.FOCUS(model, hyperparams)
 
-def cchvae(mlmodel,scm, name):
+def cchvae(mlmodel,scm, name, data):
     '''
     #TODO This has to be tested
     '''
@@ -106,6 +121,43 @@ def cchvae(mlmodel,scm, name):
 
     cchvae = recourse_catalog.CCHVAE(mlmodel, hyperparams)
     return cchvae
+# Actionable Recourse (AR)
+def actionable_recourse(mlmodel,scm, name, data):
+    '''
+    AR does not always find a counterfactual example. The probability of finding one rises for a high size of flip set.
+    https://carla-counterfactual-and-recourse-library.readthedocs.io/en/latest/recourse.html#module-recourse_methods.catalog.actionable_recourse.model
+    '''
+    return recourse_catalog.ActionableRecourse(mlmodel,hyperparams=None)
+    
+# Counterfactual Latent Uncertainty Explanations (CLUE)
+def Clue(mlmodel, scm, name, data):
+    return recourse_catalog.Clue(data, mlmodel, hyperparams=None)
+
+def Dice(mlmodel, scm, name, data):
+    return recourse_catalog.Dice(ml_model, hyperparams=None)
+
+def Face(mlmodel, scm, name, data):
+    #TODO This is not working
+    return recourse_catalog.Face(mlmodel, hyperparams={"mode":"knn","fraction":0.5})
+
+def Cruds(mlmodel, scm, name, data):
+    #TODO WHere ?
+    pass
+
+def Revise(mlmodel, scm, name, data):
+     #TODO WHere ?
+    return recourse_catalog.Revise(mlmodel, data)
+
+def Roar(mlmodel, scm, name, data):
+    return recourse_catalog.Roar(mlmodel)
+  
+def FeatureTweak(mlmodel, scm, name, data):
+    return recourse_catalog.FeatureTweak(mlmodel)
+
+# Revise
+# FeatureTweaks x Forest
+#ROAR
+
 
 def linear(dataset, name):
     '''
@@ -256,7 +308,7 @@ if __name__ =='__main__':
     test_factual=test_factual_with_labels.copy()
 
     #Recourse Method
-    recourse= locals()[f"{args.CF}"](ml_model,scm,args.data)
+    recourse= locals()[f"{args.CF}"](ml_model,scm,args.data,dataset)
     
     # Benchmarking
     benchmark_wachter = Benchmark(ml_model, recourse, test_factual)
