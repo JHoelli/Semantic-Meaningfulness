@@ -5,7 +5,7 @@ scm_dict = {
     "sanity-3-lin": sanity_3_lin,
     "sanity-3-lin-output": sanity_3_lin_output,
     "adult":adult_model, 
-    "credit_output":german_credit_output,
+    "credit-output":german_credit_output,
     "nutrition":nutrition_model,
     "credit":german_credit
 }
