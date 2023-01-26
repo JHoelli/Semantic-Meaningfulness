@@ -1,4 +1,9 @@
 #! /bin/bash
+
+# DO- Calculus
+python 1_Experiment.py sanity-3-lin linear do_calculus 10 both
+python 1_Experiment.py sanity-3-lin MLP do_calculus 10 both
+
 # causal Recourse
 
 python 1_Experiment.py sanity-3-lin MLP causal_recourse 10 both

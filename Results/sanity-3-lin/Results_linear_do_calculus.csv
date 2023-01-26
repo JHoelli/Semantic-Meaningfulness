@@ -1,0 +1,11 @@
+,semantic,correct_relationships,model,CF,dataset
+0,0.0,0.0,linear,do_calculus,sanity-3-lin
+1,0.0,0.0,linear,do_calculus,sanity-3-lin
+2,0.0,1.0,linear,do_calculus,sanity-3-lin
+3,0.0,0.0,linear,do_calculus,sanity-3-lin
+4,1.0,0.0,linear,do_calculus,sanity-3-lin
+5,1.0,1.0,linear,do_calculus,sanity-3-lin
+6,1.0,1.0,linear,do_calculus,sanity-3-lin
+7,1.0,1.0,linear,do_calculus,sanity-3-lin
+8,1.0,1.0,linear,do_calculus,sanity-3-lin
+9,1.0,1.0,linear,do_calculus,sanity-3-lin
