@@ -40,7 +40,12 @@ def wachter(ml_model,scm, name, data):
     Return: 
         carla.recourse...
     '''
-    hyperparams = {"loss_type": "BCE"}
+
+    hyperparams = {"loss_type": "BCE",
+    "lr":0.01,
+    "norm":1,
+    "lambda_param":0.01
+     }
     return recourse_catalog.wachter.model.Wachter(ml_model, hyperparams)
 
 
@@ -66,7 +71,7 @@ def causal_recourse(ml_model,scm,name, data):
 
 def growingspheres(model,scm,name, data):
     '''
-    Calls growingspheres. 
+    HAS NO HYPERPARAMS
     Attributes: 
         ml_model caral.XXX : Classifier
         name str: name of Model
@@ -148,22 +153,35 @@ def actionable_recourse(mlmodel,scm, name, data):
     
 # Counterfactual Latent Uncertainty Explanations (CLUE)
 def Clue(mlmodel, scm, name, data):
+    ''' We use the default hyperparameters from [ 3], which are set as a function of the data set
+    dimension d. Performing hyperparameter search did not yield results that were improving distances
+    while keeping the same success rate'''
     return recourse_catalog.Clue(data, mlmodel, hyperparams=None)
 
 def Dice(mlmodel, scm, name, data):
+    '''
+    Since DICE is able to compute a set of counterfactuals for a given instance, we only chose
+to generate one CE per input instance. We use a grid search for the proximity and diversity
+weights. -> #TODO Better way
+    '''
     return recourse_catalog.Dice(ml_model, hyperparams=None)
 
 def FeatureTweak(mlmodel, scm, name, data):
+    '''
+    eps=0.1
+    '''
     return recourse_catalog.FeatureTweak(mlmodel)
 
 
 
 def Cruds(mlmodel, scm, name, data):
-    #TODO PARAms
-    return recourse_catalog.crud.model.CRUD(mlmodel, hyperparams={"data_name":name,"vae_params": {
-            "layers": [data.df.shape[-1]-1,64,2],
+    '''
+    Parameters from Cruds Paper
+    '''
+    return recourse_catalog.crud.model.CRUD(mlmodel, hyperparams={"data_name":name, "optimizer": "ADAM","vae_params": {
+            "layers": [data.df.shape[-1]-1,64,1],
             "train": True,
-            "epochs": 5,
+            "epochs": 500,
             "lr": 1e-3,
             "batch_size": 32,
         },})
@@ -200,13 +218,18 @@ def linear(dataset, name):
     ml_model = MLModelCatalog(
     dataset, model_type="linear", load_online=False, backend="pytorch"
     )
-    ml_model.train(
+    if os.path.isfile(f'./Results/Model/Linear_{name}.pth'):
+        model=torch.load(f'./Results/Model/Linear_{name}.pth')
+        ml_model._model=model
+    else:
+        ml_model.train(
         learning_rate=training_params["lr"],
         epochs=training_params["epochs"],
         batch_size=training_params["batch_size"],
         hidden_size=training_params["hidden_size"],
         force_train=True
-    )
+        )
+        torch.save(ml_model.raw_model,f'./Results/Model/Linear_{name}.pth')
 
     return ml_model
 
@@ -215,7 +238,12 @@ def forest(dataset, name):
     TODO Test
     '''
     ml_model = MLModelCatalog(dataset, "forest", backend="sklearn", load_online=False)
-    ml_model.train(max_depth=2, n_estimators=5, force_train=True)
+    if os.path.isfile(f'./Results/Model/Forest_{name}.pth'):
+        model=torch.load(f'./Results/Model/Forest_{name}.pth')
+        ml_model._model=model
+    else:
+        ml_model.train(max_depth=2, n_estimators=5, force_train=True)
+        torch.save(ml_model.raw_model,f'./Results/Model/Forest_{name}.pth')
     return ml_model
 
 
@@ -228,18 +256,25 @@ def MLP(dataset, name):
     Returns: 
         carla.XXX
     '''
+    
     training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
 
     ml_model = MLModelCatalog(
     dataset, model_type="ann", load_online=False, backend="pytorch"
     )
-    ml_model.train(
+    if os.path.isfile(f'./Results/Model/MLP_{name}.pth'):
+        model=torch.load(f'./Results/Model/MLP_{name}.pth')
+        ml_model._model=model
+    else:
+        ml_model.train(
         learning_rate=training_params["lr"],
         epochs=training_params["epochs"],
         batch_size=training_params["batch_size"],
         hidden_size=training_params["hidden_size"],
         force_train=True
-    )
+        )
+
+        torch.save(ml_model.raw_model,f'./Results/Model/MLP_{name}.pth')
     return ml_model
 
 def data(name, not_causal=True):
