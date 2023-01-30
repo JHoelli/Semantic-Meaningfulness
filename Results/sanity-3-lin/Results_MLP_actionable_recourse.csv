@@ -1,3 +1,6 @@
 ,semantic,correct_relationships,model,CF,dataset
 0,0.0,0.0,MLP,actionable_recourse,sanity-3-lin
-1,1.0,1.0,MLP,actionable_recourse,sanity-3-lin
+1,0.0,0.0,MLP,actionable_recourse,sanity-3-lin
+2,0.0,1.0,MLP,actionable_recourse,sanity-3-lin
+3,1.0,1.0,MLP,actionable_recourse,sanity-3-lin
+4,1.0,1.0,MLP,actionable_recourse,sanity-3-lin
