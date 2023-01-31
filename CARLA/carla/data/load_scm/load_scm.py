@@ -1,9 +1,13 @@
 import numpy as np
 
-from .scm import sanity_3_lin,sanity_3_lin_output,  adult_model, nutrition_model, german_credit,german_credit_output
+from .scm import sanity_3_lin,sanity_3_non_add,sanity_3_non_add_output,sanity_3_lin_output,sanity_3_non_lin_output, sanity_3_non_lin, adult_model, nutrition_model, german_credit,german_credit_output
 scm_dict = {
     "sanity-3-lin": sanity_3_lin,
     "sanity-3-lin-output": sanity_3_lin_output,
+    "sanity-3-non-lin": sanity_3_non_lin,
+    "sanity-3-non-lin-output": sanity_3_non_lin_output,
+    "sanity-3-non-add": sanity_3_non_add,
+    "sanity-3-non-add-output": sanity_3_non_add_output,
     "adult":adult_model, 
     "credit-output":german_credit_output,
     "nutrition":nutrition_model,

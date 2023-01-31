@@ -33,6 +33,123 @@ def sanity_3_lin_output():
         categorical,
         immutables,
     )
+
+def sanity_3_non_lin_output():
+    structural_equations_np = {
+        "x1": lambda n_samples: n_samples,
+        "x2": lambda n_samples, x1: -1+(3/(1+np.exp(-2*x1))) + n_samples,
+        "x3": lambda n_samples, x1, x2: 0.5 * (0.1 * x1 + 0.5 * x2) + n_samples,
+        #TODO Does it make sense to exclude n samples here ? 
+        "x4":lambda  x1, x2,x3:1 / (1 + np.exp(-(2.5 / np.mean(np.abs(np.dot([round(x1,8),round(x2,8),round(x3,8)], np.ones((3, 1)))))) * np.dot([round(x1,8),round(x2,8),round(x3,8)], np.ones((3, 1))))), #1/ (1 + np.exp(- 2.5 / np.mean(np.abs(np.dot([x1,x2,x3], np.ones((3, 1))))))* np.dot([x1,x2,x3], np.ones((3, 1)))),
+    }
+    structural_equations_ts = structural_equations_np
+    noises_distributions = {
+        "u1": MixtureOfGaussians([0.5, 0.5], [-2, +1], [1.5, 1]),
+        "u2": Normal(0, 0.1),
+        "u3": Normal(0, 1),
+        "u4": Normal(0, 1),
+    }
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical = []
+    immutables = []
+
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
+
+def sanity_3_non_lin():
+    structural_equations_np = {
+        "x1": lambda n_samples: n_samples,
+        "x2": lambda n_samples, x1: -1+(3/(1+np.exp(-2*x1))) + n_samples,
+        "x3": lambda n_samples, x1, x2: 0.5 * (0.1 * x1 + 0.5 * x2) + n_samples,
+        
+    }
+    structural_equations_ts = structural_equations_np
+    noises_distributions = {
+        "u1": MixtureOfGaussians([0.5, 0.5], [-2, +1], [1.5, 1]),
+        "u2": Normal(0, 0.1),
+        "u3": Normal(0, 1),
+    }
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical = []
+    immutables = []
+
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
+
+def sanity_3_non_add_output():
+    structural_equations_np = {
+        "x1": lambda n_samples: n_samples,
+        "x2": lambda n_samples, x1: np.sign(n_samples) * (x1 ** 2 + n_samples) / 5,
+        "x3": lambda n_samples, x1, x2:  -1 * np.sqrt(x1**2 + x2**2) + n_samples,
+        #TODO Does it make sense to exclude n samples here ? 
+        "x4":lambda  x1, x2,x3:1 / (1 + np.exp(-(2.5 / np.mean(np.abs(np.dot([round(x1,8),round(x2,8),round(x3,8)], np.ones((3, 1)))))) * np.dot([round(x1,8),round(x2,8),round(x3,8)], np.ones((3, 1))))), #1/ (1 + np.exp(- 2.5 / np.mean(np.abs(np.dot([x1,x2,x3], np.ones((3, 1))))))* np.dot([x1,x2,x3], np.ones((3, 1)))),
+    }
+    structural_equations_ts = structural_equations_np
+    noises_distributions = {
+        "u1": MixtureOfGaussians([0.5, 0.5], [-2, +1], [1.5, 1]),
+        "u2": Normal(0, 0.3),
+        "u3": Normal(0, 1),
+        "u4": Normal(0, 1),
+    }
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical = []
+    immutables = []
+
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
+
+def sanity_3_non_add():
+    structural_equations_np = {
+        "x1": lambda n_samples: n_samples,
+        "x2": lambda n_samples, x1: np.sign(n_samples) * (x1 ** 2 + n_samples) / 5,
+        "x3": lambda n_samples, x1, x2:  -1 * np.sqrt(x1**2 + x2**2) + n_samples,
+        
+    }
+    structural_equations_ts = structural_equations_np
+    noises_distributions = {
+        "u1": MixtureOfGaussians([0.5, 0.5], [-2, +1], [1.5, 1]),
+        "u2": Normal(0, 0.3),
+        "u3": Normal(0, 1),
+    }
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical = []
+    immutables = []
+
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
+
 def german_credit():
     e_0 = -1
     e_G = 0.5
@@ -217,13 +334,21 @@ def adult_model():
 
     print('Adult Model Initiate')
     structural_equations_np = {
+        # A_sex
         "x1": lambda n_samples: n_samples,
+        # C_age
        "x2": lambda n_samples: n_samples,
+       # C_nationality
         "x3": lambda n_samples: n_samples,
+         # M_marital_status
         "x4": lambda n_samples, x1: 0.02 * x1 + n_samples,
+        # L_education_level / real-valued
         "x5": lambda n_samples, x1: 0.01* x1 + n_samples,
+         # R_working_class
         "x6": lambda n_samples, x1, x2, x3: -0.01 * x1+ 0.03 * x2 - 0.01*x3 + n_samples,
+        # R_occupation
         "x7": lambda n_samples: n_samples,
+        # R_hours_per_week
         "x8": lambda n_samples: n_samples,
         "x9": lambda n_samples, x4,x5, x6, x3, x7, x8:0*x5+0.05 * x4 + 0.03 * x6+ 0.04 * x3-0.04*x7-0.02 * x8 + n_samples,
 
