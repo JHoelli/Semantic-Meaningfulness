@@ -1,7 +1,7 @@
 """
 Based on https://github.com/amirhk/recourse/blob/master/loadSCM.py
 """
-from carla.data.load_scm.distributions import Bernoulli, MixtureOfGaussians, Normal,Uniform, Bernoulli, Gamma
+from carla.data.load_scm.distributions import Bernoulli, MixtureOfGaussians, Normal,Uniform, Bernoulli, Gamma,Poisson
 import numpy as np
 
 def sanity_3_lin_output():
