@@ -327,7 +327,133 @@ def german_credit_output():
         immutables,
     )
 
+def economic_growth_china_output():
+    #FROM https://www.sciencedirect.com/science/article/abs/pii/S0360544221031546 
+    structural_equations_np = {
+        # Latent Variables
+        # Energy source structure 
+        "x1": lambda n_samples: n_samples,
+        # Informatization level 
+        "x2": lambda x4,x3, n_samples: 0.836 * x4+0.464 *x3+ n_samples,#x4 0.023, 6.156
+        # Ecological Awarness
+        "x3": lambda x4, n_samples: 0.889 *x4+ n_samples,
+        #Observed Variables
+        # Electrictity Consumption
+        "x4": lambda n_samples: n_samples,
+        # Economic Growth
+        "x5": lambda x7,x8,x12,x2,x11, x4,x1, n_samples: 0.538 *x7 +0.426*x8+0.826*x12+ 0.293*x2+0.527 *x11+ 0.169 *x4+0.411*x1+n_samples,
+        # Electrictiy Investment
+        "x6": lambda x4,n_samples: 0.898*x4 +n_samples, #0.426*x4+ 7.984
+        # Investment other Idustries
+        "x7": lambda x6,  n_samples:0.783* x6+ n_samples,# x6 13.023*** 0.783 7.617
+        # Employment
+        "x8": lambda x4,  n_samples: 0.789 *x4+ n_samples,# x4 .882** 0.789 3.307
+        # Development of the secondary industry 
+        "x9": lambda x2, x4,n_samples: 0.566*x4+0.561* x2+n_samples, #'x4 3.014,0.566,7.816',x2336.3*** 0.561 9.785
+        # Development of the tertiary industry 
+        "x10": lambda x2, x4, n_samples:0.537* x4+0.712*x2+ n_samples, # x4 3.768*** 0.537 7.093, x2899.0*** 0.712 8.018
+        # Proportion of non-agriculture
+        "x11": lambda x9, x10, x7, x2,n_samples:0.731*x9+ 0.612 *x10+0.662*x7+0.605 *x2+ n_samples,# x9 0.234** 0.731 3.183, x10 0.014*** 0.612 8.251
+        # Labor productivity
+        "x12": lambda x4,n_samples: 0.918* x4 + n_samples,#227*** 0.918 7.648
+    
+    }
+    structural_equations_ts = structural_equations_np
+    #TODO
+    noises_distributions = {
+       "u1": Uniform(0,1),
+        "u2": Uniform(0,41),
+        "u3": Uniform(17, 90),
+        "u4": Uniform(0, 5),
+       "u5": Uniform(1, 99),
+       "u6": Uniform(0, 99999),
+       "u7": Uniform(0, 15),
+       "u8": Uniform(0, 14),
+      "u9": Uniform(0, 1),
+      "u10": Uniform(0,1),
+      "u11": Uniform(0,1),
+    "u12": Uniform(0,41),
 
+    }
+    print('Noise Distribution Finished')
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
+    immutables =[]# 
+    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
+    immutables =[]# ['x3','sex']
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
+
+def economic_growth_china():
+    #FROM https://www.sciencedirect.com/science/article/abs/pii/S0360544221031546 
+    structural_equations_np = {
+        # Latent Variables
+        # Energy source structure 
+        "x1": lambda n_samples: n_samples,
+        # Informatization level 
+        "x2": lambda x4,x3, n_samples: 0.836 * x4+0.464 *x3+ n_samples,#x4 0.023, 6.156
+        # Ecological Awarness
+        "x3": lambda x4, n_samples: 0.889 *x4+ n_samples,
+        #Observed Variables
+        # Electrictity Consumption
+        "x4": lambda n_samples: n_samples,
+        # Electrictiy Investment
+        "x6": lambda x4,n_samples: 0.898*x4 +n_samples, #0.426*x4+ 7.984
+        # Investment other Idustries
+        "x7": lambda x6,  n_samples:0.783* x6+ n_samples,# x6 13.023*** 0.783 7.617
+        # Employment
+        "x8": lambda x4,  n_samples: 0.789 *x4+ n_samples,# x4 .882** 0.789 3.307
+        # Development of the secondary industry 
+        "x9": lambda x2, x4,n_samples: 0.566*x4+0.561* x2+n_samples, #'x4 3.014,0.566,7.816',x2336.3*** 0.561 9.785
+        # Development of the tertiary industry 
+        "x10": lambda x2, x4, n_samples:0.537* x4+0.712*x2+ n_samples, # x4 3.768*** 0.537 7.093, x2899.0*** 0.712 8.018
+        # Proportion of non-agriculture
+        "x11": lambda x9, x10, x7, x2,n_samples:0.731*x9+ 0.612 *x10+0.662*x7+0.605 *x2+ n_samples,# x9 0.234** 0.731 3.183, x10 0.014*** 0.612 8.251
+        # Labor productivity
+        "x12": lambda x4,n_samples: 0.918* x4 + n_samples,#227*** 0.918 7.648
+    
+    }
+    structural_equations_ts = structural_equations_np
+    #TODO
+    noises_distributions = {
+       "u1": Uniform(0,1),
+        "u2": Uniform(0,41),
+        "u3": Uniform(17, 90),
+        "u4": Uniform(0, 5),
+       "u5": Uniform(1, 99),
+       "u6": Uniform(0, 99999),
+       "u7": Uniform(0, 15),
+       "u8": Uniform(0, 14),
+      "u9": Uniform(0, 1),
+      "u10": Uniform(0,1),
+      "u11": Uniform(0,1),
+    "u12": Uniform(0,41),
+
+    }
+    print('Noise Distribution Finished')
+    continuous = list(structural_equations_np.keys()) + list(
+        noises_distributions.keys()
+    )
+    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
+    immutables =[]# 
+    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
+    immutables =[]# ['x3','sex']
+    return (
+        structural_equations_np,
+        structural_equations_ts,
+        noises_distributions,
+        continuous,
+        categorical,
+        immutables,
+    )
 
 def adult_model():
     #Taken from https://github.com/amirhk/recourse/blob/master/loadSCM.py
