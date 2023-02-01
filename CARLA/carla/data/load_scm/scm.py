@@ -359,30 +359,28 @@ def economic_growth_china_output():
     
     }
     structural_equations_ts = structural_equations_np
-    #TODO
+   #TODO
     noises_distributions = {
-       "u1": Uniform(0,1),
-        "u2": Uniform(0,41),
-        "u3": Uniform(17, 90),
-        "u4": Uniform(0, 5),
-       "u5": Uniform(1, 99),
-       "u6": Uniform(0, 99999),
-       "u7": Uniform(0, 15),
-       "u8": Uniform(0, 14),
-      "u9": Uniform(0, 1),
-      "u10": Uniform(0,1),
-      "u11": Uniform(0,1),
-    "u12": Uniform(0,41),
+        #http://www.stats.gov.cn/tjsj/ndsj/2019/indexeh.htm
+       "u1": Uniform(0,1),#TODO
+        "u2": Uniform(0,41),#TODO
+        "u3": Uniform(17, 90),#TODO
+        "u4": Uniform(0, 100000),#100 mio kwh
+       "u5": Uniform(1, 99),# Outcome not relevant
+       "u6": Uniform(0, 99999),#TODO Investment
+       "u7": Uniform(0, 15),#TODO Investment
+       "u8": Uniform(0, 70),#Done
+     "u9": Uniform(0, 2000), #DOne
+    "u10": Uniform(0,2000),#Done
+    "u11": Uniform(0,100),# DOne
+    "u12": Uniform(0,500000),#Done
 
     }
-    print('Noise Distribution Finished')
     continuous = list(structural_equations_np.keys()) + list(
         noises_distributions.keys()
     )
-    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
-    immutables =[]# 
-    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
-    immutables =[]# ['x3','sex']
+    categorical =[]
+    immutables =[]
     return (
         structural_equations_np,
         structural_equations_ts,
@@ -391,9 +389,9 @@ def economic_growth_china_output():
         categorical,
         immutables,
     )
-
 def economic_growth_china():
     #FROM https://www.sciencedirect.com/science/article/abs/pii/S0360544221031546 
+    #1 Billion = 1.000.000.000
     structural_equations_np = {
         # Latent Variables
         # Energy source structure 
@@ -422,20 +420,20 @@ def economic_growth_china():
     
     }
     structural_equations_ts = structural_equations_np
-    #TODO
+    #http://www.stats.gov.cn/tjsj/ndsj/2019/indexeh.htm
     noises_distributions = {
-       "u1": Uniform(0,1),
-        "u2": Uniform(0,41),
-        "u3": Uniform(17, 90),
-        "u4": Uniform(0, 5),
-       "u5": Uniform(1, 99),
-       "u6": Uniform(0, 99999),
-       "u7": Uniform(0, 15),
-       "u8": Uniform(0, 14),
-      "u9": Uniform(0, 1),
-      "u10": Uniform(0,1),
-      "u11": Uniform(0,1),
-    "u12": Uniform(0,41),
+        #http://www.stats.gov.cn/tjsj/ndsj/2019/indexeh.htm
+       "u1": Uniform(0,1),#TODO
+        "u2": Uniform(0,41),#TODO
+        "u3": Uniform(17, 90),#TODO
+        "u4": Uniform(0, 100000),#100 mio kwh
+       "u6": Uniform(0, 99999),#TODO Investment
+       "u7": Uniform(0, 15),#TODO Investment
+       "u8": Uniform(0, 70),#Done
+     "u9": Uniform(0, 2000), #DOne
+    "u10": Uniform(0,2000),#Done
+    "u11": Uniform(0,100),# DOne
+    "u12": Uniform(0,500000),#Done
 
     }
     print('Noise Distribution Finished')
@@ -444,8 +442,6 @@ def economic_growth_china():
     )
     categorical =[]# ['x8', 'relationship', 'x2', 'sex']
     immutables =[]# 
-    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
-    immutables =[]# ['x3','sex']
     return (
         structural_equations_np,
         structural_equations_ts,
@@ -455,62 +451,114 @@ def economic_growth_china():
         immutables,
     )
 
-def adult_model():
+#def adult_model():
     #Taken from https://github.com/amirhk/recourse/blob/master/loadSCM.py
 
-    print('Adult Model Initiate')
-    structural_equations_np = {
-        # A_sex
-        "x1": lambda n_samples: n_samples,
+#    print('Adult Model Initiate')
+#    structural_equations_np = {
+       # A_sex
+#        "x1": lambda n_samples: n_samples,
         # C_age
-       "x2": lambda n_samples: n_samples,
+#       "x2": lambda n_samples: n_samples,
        # C_nationality
-        "x3": lambda n_samples: n_samples,
+#        "x3": lambda n_samples: n_samples,
          # M_marital_status
-        "x4": lambda n_samples, x1: 0.02 * x1 + n_samples,
+#        "x4": lambda n_samples, x1: 0.02 * x1 + n_samples,
         # L_education_level / real-valued
-        "x5": lambda n_samples, x1: 0.01* x1 + n_samples,
+#        "x5": lambda n_samples, x1: 0.01* x1 + n_samples,
          # R_working_class
-        "x6": lambda n_samples, x1, x2, x3: -0.01 * x1+ 0.03 * x2 - 0.01*x3 + n_samples,
+#        "x6": lambda n_samples, x1, x2, x3: -0.01 * x1+ 0.03 * x2 - 0.01*x3 + n_samples,
         # R_occupation
-        "x7": lambda n_samples: n_samples,
+#        "x7": lambda n_samples: n_samples,
         # R_hours_per_week
-        "x8": lambda n_samples: n_samples,
-        "x9": lambda n_samples, x4,x5, x6, x3, x7, x8:0*x5+0.05 * x4 + 0.03 * x6+ 0.04 * x3-0.04*x7-0.02 * x8 + n_samples,
+#        "x8": lambda n_samples: n_samples,
+#        "x9": lambda n_samples, x4,x5, x6, x3, x7, x8:0*x5+0.05 * x4 + 0.03 * x6+ 0.04 * x3-0.04*x7-0.02 * x8 + n_samples,
 
-    }
-    print('Structural Equation Finished')
-    structural_equations_ts = structural_equations_np
-    noises_distributions = {
-       "u1": Uniform(0,1),
-        "u2": Uniform(0,41),
-        "u3": Uniform(17, 90),
-        "u4": Uniform(0, 5),
-       "u5": Uniform(1, 99),
-       "u6": Uniform(0, 99999),
-       "u7": Uniform(0, 15),
-       "u8": Uniform(0, 14),
-      "u9": Uniform(0, 1),
-    }
-    print('Noise Distribution Finished')
-    continuous = list(structural_equations_np.keys()) + list(
-        noises_distributions.keys()
-    )
-    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
-    immutables =[]# ['x3','sex']
-    return (
-        structural_equations_np,
-        structural_equations_ts,
-        noises_distributions,
-        continuous,
-        categorical,
-        immutables,
-    )
+#    }
+#    print('Structural Equation Finished')
+ #   structural_equations_ts = structural_equations_np
+#    noises_distributions = {
+ #      "u1": Uniform(0,1),
+#        "u2": Uniform(0,41),
+#        "u3": Uniform(17, 90),
+#        "u4": Uniform(0, 5),
+#       "u5": Uniform(1, 99),
+#       "u6": Uniform(0, 99999),
+#       "u7": Uniform(0, 15),
+#       "u8": Uniform(0, 14),
+#      "u9": Uniform(0, 1),
+#    }
+#    print('Noise Distribution Finished')
+#    continuous = list(structural_equations_np.keys()) + list(
+#        noises_distributions.keys()
+#    )
+#    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
+#    immutables =[]# ['x3','sex']
+#    return (
+#        structural_equations_np,
+#        structural_equations_ts,
+#        noises_distributions,
+#        continuous,
+#        categorical,
+#        immutables,
+#    )
+#def adult_model_output():
+    #Taken from https://github.com/amirhk/recourse/blob/master/loadSCM.py
+
+#    print('Adult Model Initiate')
+#    structural_equations_np = {
+        # A_sex
+#        "x1": lambda n_samples: n_samples,
+        # C_age
+#       "x2": lambda n_samples: n_samples,
+       # C_nationality
+#        "x3": lambda n_samples: n_samples,
+         # M_marital_status
+#        "x4": lambda n_samples, x1: 0.02 * x1 + n_samples,
+        # L_education_level / real-valued
+#        "x5": lambda n_samples, x1: 0.01* x1 + n_samples,
+         # R_working_class
+#        "x6": lambda n_samples, x1, x2, x3: -0.01 * x1+ 0.03 * x2 - 0.01*x3 + n_samples,
+        # R_occupation
+#        "x7": lambda n_samples: n_samples,
+        # R_hours_per_week
+#        "x8": lambda n_samples: n_samples,
+#        "x9": lambda n_samples, x4,x5, x6, x3, x7, x8:0*x5+0.05 * x4 + 0.03 * x6+ 0.04 * x3-0.04*x7-0.02 * x8 + n_samples,
+
+#    }
+#    print('Structural Equation Finished')
+#    structural_equations_ts = structural_equations_np
+#    noises_distributions = {
+#       "u1": Uniform(0,1),
+#        "u2": Uniform(0,41),
+#        "u3": Uniform(17, 90),
+#        "u4": Uniform(0, 5),
+#       "u5": Uniform(1, 99),
+#       "u6": Uniform(0, 99999),
+#       "u7": Uniform(0, 15),
+#       "u8": Uniform(0, 14),
+#      "u9": Uniform(0, 1),
+#    }
+#    print('Noise Distribution Finished')
+#    continuous = list(structural_equations_np.keys()) + list(
+#        noises_distributions.keys()
+#    )
+#    categorical =[]# ['x8', 'relationship', 'x2', 'sex']
+#    immutables =[]# ['x3','sex']
+#    return (
+#        structural_equations_np,
+#        structural_equations_ts,
+#        noises_distributions,
+#        continuous,
+ #       categorical,
+ #       immutables,
+ #   )
+
 
 
 
 def nutrition_model():
-    print('Adult Model Initiate')
+
     structural_equations_np = {
         #Age
         "x1": lambda n_samples: n_samples,
