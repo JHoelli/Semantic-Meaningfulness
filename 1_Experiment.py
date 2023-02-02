@@ -339,6 +339,8 @@ def data(name, not_causal=True, scaler='Identity'):
     return dataset, scm , scm_output
 
 if __name__ =='__main__':
+    import os
+    os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
     i=None
 
     hyperparams={
@@ -383,7 +385,7 @@ if __name__ =='__main__':
         hyperparams={0:''}
     for hyper in hyperparams.keys():
         ml_model= locals()[f"{args.model}"](dataset,args.data, hyperparams[hyper],hyper)
-
+        i=hyper
         # get factuals
         factuals = predict_negative_instances(ml_model, dataset.df)
         test_factual_with_labels = factuals.iloc[:args.n_eval].reset_index(drop=True)
@@ -401,13 +403,13 @@ if __name__ =='__main__':
         results = benchmark_wachter.run_benchmark(evaluation_measures)
         if not os.path.isdir(f'./Results/{args.data}'):
             os.mkdir(f'./Results/{args.data}')
-        results['model']=np.repeat(args.model, len(results.index))
+        results['model']=np.repeat(f'{args.model}{i}', len(results.index))
         results['CF']=np.repeat(args.CF, len(results.index))
         results['dataset']=np.repeat(args.data, len(results.index))
         results.to_csv(f'./Results/{args.data}/Results_{args.model}{hyper}_{args.CF}.csv')
 
         summary=pd.DataFrame([])
-        summary['model']=[f'{args.model}']
+        summary['model']=[f'{args.model}{i}']
         summary['dataset']=[f'{args.data}']
         summary['CF']=[f'{args.CF}']
         summary['semantic_mean']=np.mean(results['semantic'])
