@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP1,credit,wachter,0.141287284144427,0.1428485169994013,0.14442700156985872,0.14284851699940124

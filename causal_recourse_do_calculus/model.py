@@ -149,8 +149,10 @@ class CausalRecourse_DoCalculus():
         #print(4)
         min_cost = np.infty
         min_action_set = {}
+        min_cf=[]
         #print(5)
         if self._optimization_approach == "brute_force":
+
             valid_action_sets = get_discretized_action_sets(
                 intervenables_nodes, min_values, max_values, mean_values
             )
@@ -213,8 +215,10 @@ class CausalRecourse_DoCalculus():
             # actions.append(min_action_set)
             #print('CF TO Factual instacne No', index)
             print('CF', cf)
-            
-            cfs.append(cf.iloc[0])
+            try:
+                cfs.append(cf.iloc[0])
+            except: 
+                cfs.append(cf)
 
             print('CFS',cfs)
 

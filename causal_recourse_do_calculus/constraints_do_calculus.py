@@ -34,6 +34,7 @@ def point_constraint(scm, factual_instance, action_set, sampling_handle, mlmodel
     sampler = Sampler(scm)
     cf_instance = sampler.sample(1, factual_instance, action_set, sampling_handle)
     print('cf Inatance from Constraint', cf_instance)
+    #TODO Does it make more sense to use causal based ?     
     prediction = mlmodel.predict(cf_instance)
     #print('prediction from DL Model', prediction)
     #print('Tuple', (prediction.round() == 1, cf_instance))
