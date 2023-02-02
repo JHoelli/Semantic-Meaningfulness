@@ -205,7 +205,7 @@ def Cruds(mlmodel, scm, name, data):
   
 
 
-def linear(dataset, name):
+def linear(dataset, name,hyperparams,i):
     '''
     Linear Model.
     Attributes: 
@@ -214,7 +214,7 @@ def linear(dataset, name):
     Returns: 
         carla.XXX
     '''
-    training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
+    training_params = hyperparams#{"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
     ml_model = MLModelCatalog(
     dataset, model_type="linear", load_online=False, backend="pytorch"
     )
@@ -233,7 +233,7 @@ def linear(dataset, name):
 
     return ml_model
 
-def forest(dataset, name):
+def forest(dataset, name,hyperparams,i):
     '''
     TODO Test
     '''
@@ -247,7 +247,7 @@ def forest(dataset, name):
     return ml_model
 
 
-def MLP(dataset, name):
+def MLP(dataset, name,hyperparams,i):
     '''
     Load and return MLP. 
     Attributes: 
@@ -257,16 +257,16 @@ def MLP(dataset, name):
         carla.XXX
     '''
     
-    training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
-    if name=='economic':
-         training_params = {"lr": 0.002, "epochs": 10, "batch_size": 1024, "hidden_size": [18, 9, 3],' num_of_classes':2}
-
+    training_params =hyperparams #{"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
+    #if name=='economic':
+    #     training_params = {"lr": 0.002, "epochs": 10, "batch_size": 1024, "hidden_size": [18, 9, 3],' num_of_classes':2}
+    print
 
     ml_model = MLModelCatalog(
     dataset, model_type="ann", load_online=False, backend="pytorch"
     )
-    if os.path.isfile(f'./Results/Model/MLP_{name}.pth'):
-        model=torch.load(f'./Results/Model/MLP_{name}.pth')
+    if os.path.isfile(f'./Results/Model/MLP_{name}{i}.pth'):
+        model=torch.load(f'./Results/Model/MLP_{name}{i}.pth')
         ml_model._model=model
     else:
         ml_model.train(
@@ -277,7 +277,7 @@ def MLP(dataset, name):
         force_train=True
         )
 
-        torch.save(ml_model.raw_model,f'./Results/Model/MLP_{name}.pth')
+        torch.save(ml_model.raw_model,f'./Results/Model/MLP_{name}{i}.pth')
     return ml_model
 
 def data(name, not_causal=True, scaler='Identity'):
@@ -339,6 +339,15 @@ def data(name, not_causal=True, scaler='Identity'):
     return dataset, scm , scm_output
 
 if __name__ =='__main__':
+    i=None
+
+    hyperparams={
+        0: {"lr": 0.1, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
+        1: {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
+        2: {"lr": 0.001, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3],' num_of_classes':2}
+
+
+    }
     #import 1_Experiment
     #SEED Setting
     seed = 42
@@ -369,46 +378,44 @@ if __name__ =='__main__':
         scaler='MinMax'
     #Load Dataset    
     dataset, scm, scm_output=data(args.data, not_causal,scaler)
-    ml_model= locals()[f"{args.model}"](dataset,args.data)
+    if args.model!='MLP':
+        print('NoHyper')
+        hyperparams={0:''}
+    for hyper in hyperparams.keys():
+        ml_model= locals()[f"{args.model}"](dataset,args.data, hyperparams[hyper],hyper)
 
-    # get factuals
-    factuals = predict_negative_instances(ml_model, dataset.df)
-    test_factual_with_labels = factuals.iloc[:args.n_eval].reset_index(drop=True)
-    test_factual=test_factual_with_labels.copy()
+        # get factuals
+        factuals = predict_negative_instances(ml_model, dataset.df)
+        test_factual_with_labels = factuals.iloc[:args.n_eval].reset_index(drop=True)
+        test_factual=test_factual_with_labels.copy()
 
-    #Recourse Method
-    recourse= locals()[f"{args.CF}"](ml_model,scm,args.data,dataset)
+        #Recourse Method
+        recourse= locals()[f"{args.CF}"](ml_model,scm,args.data,dataset)
     
-    # Benchmarking
-    benchmark_wachter = Benchmark(ml_model, recourse, test_factual)
-    evaluation_measures = [
-    Sematic(ml_model, causal_graph_full=scm_output,causal_graph_small=scm),    
-    ]
+        # Benchmarking
+        benchmark_wachter = Benchmark(ml_model, recourse, test_factual)
+        evaluation_measures = [
+        Sematic(ml_model, causal_graph_full=scm_output,causal_graph_small=scm),    
+        ]
 
-    results = benchmark_wachter.run_benchmark(evaluation_measures)
-    if not os.path.isdir(f'./Results/{args.data}'):
-        os.mkdir(f'./Results/{args.data}')
-    results['model']=np.repeat(args.model, len(results.index))
-    results['CF']=np.repeat(args.CF, len(results.index))
-    results['dataset']=np.repeat(args.data, len(results.index))
-    results.to_csv(f'./Results/{args.data}/Results_{args.model}_{args.CF}.csv')
+        results = benchmark_wachter.run_benchmark(evaluation_measures)
+        if not os.path.isdir(f'./Results/{args.data}'):
+            os.mkdir(f'./Results/{args.data}')
+        results['model']=np.repeat(args.model, len(results.index))
+        results['CF']=np.repeat(args.CF, len(results.index))
+        results['dataset']=np.repeat(args.data, len(results.index))
+        results.to_csv(f'./Results/{args.data}/Results_{args.model}{hyper}_{args.CF}.csv')
 
-    summary=pd.DataFrame([])
-    summary['model']=[f'{args.model}']
-    summary['dataset']=[f'{args.data}']
-    summary['CF']=[f'{args.CF}']
-    summary['semantic_mean']=np.mean(results['semantic'])
-    summary['semantic_std']=np.std(results['semantic'])
-    summary['relationship_mean']=np.mean(results['correct_relationships'])
-    summary['relationship_std']=np.std(results['correct_relationships'])
-    summary.to_csv(f'./Results/{args.data}/summary_{args.model}_{args.CF}.csv')
+        summary=pd.DataFrame([])
+        summary['model']=[f'{args.model}']
+        summary['dataset']=[f'{args.data}']
+        summary['CF']=[f'{args.CF}']
+        summary['semantic_mean']=np.mean(results['semantic'])
+        summary['semantic_std']=np.std(results['semantic'])
+        summary['relationship_mean']=np.mean(results['correct_relationships'])
+        summary['relationship_std']=np.std(results['correct_relationships'])
+        summary.to_csv(f'./Results/{args.data}/summary_{args.model}{hyper}_{args.CF}.csv')
 
-    #TODO save THIS
-    #mean= np.mean(results)
-    #std= np.std(results)
-
-    #print(f'Semantic results {mean} +/- {std}')
-    #print(f'Parameters FINAL : {args.data}, {args.model}, {args.CF}. {args.n_eval}, {args.semantic_measure}')   
 
 
 

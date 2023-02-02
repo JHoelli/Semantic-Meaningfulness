@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,forest,sanity-3-lin,FeatureTweak,0.711864406779661,0.4528945496910979,0.711864406779661,0.4528945496910979

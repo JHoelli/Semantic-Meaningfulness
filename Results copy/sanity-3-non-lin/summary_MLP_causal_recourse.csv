@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP,sanity-3-non-lin,causal_recourse,0.55,0.49749371855331004,0.54,0.49839743177508444
