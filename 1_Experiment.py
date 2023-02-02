@@ -258,6 +258,9 @@ def MLP(dataset, name):
     '''
     
     training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
+    if name=='economic':
+         training_params = {"lr": 0.002, "epochs": 10, "batch_size": 1024, "hidden_size": [18, 9, 3],' num_of_classes':2}
+
 
     ml_model = MLModelCatalog(
     dataset, model_type="ann", load_online=False, backend="pytorch"
@@ -277,7 +280,7 @@ def MLP(dataset, name):
         torch.save(ml_model.raw_model,f'./Results/Model/MLP_{name}.pth')
     return ml_model
 
-def data(name, not_causal=True):
+def data(name, not_causal=True, scaler='Identity'):
     '''
     Load and return Toy Dataset.
     Attribute: 
@@ -309,7 +312,7 @@ def data(name, not_causal=True):
                      categorical=[],
                      immutables=[],
                      target='label',
-                     scaling_method='Identity')
+                     scaling_method=scaler)
     else: 
         if not_causal:
             dataset = pd.read_csv(f'./data/{name}/{name}.csv')
@@ -320,7 +323,7 @@ def data(name, not_causal=True):
                      categorical=[],
                      immutables=[],
                      target='label',
-                     scaling_method='Identity')
+                     scaling_method=scaler)
         else: 
 
             dataset = pd.read_csv(f'./data/{name}/{name}.csv')
@@ -331,7 +334,7 @@ def data(name, not_causal=True):
                      categorical=[],
                      immutables=[],
                      target='label',
-                     scaling_method='Identity')
+                     scaling_method=scaler)
     
     return dataset, scm , scm_output
 
@@ -359,10 +362,13 @@ if __name__ =='__main__':
 
     print(f'Parameters : {args.data}, {args.model}, {args.CF}. {args.n_eval}, {args.semantic_measure}')   
     not_causal=True
+    scaler='Identity'
     if 'causal' in f'{args.CF}':
         not_causal=False
+    if 'economic' in f'{args.data}':
+        scaler='MinMax'
     #Load Dataset    
-    dataset, scm, scm_output=data(args.data, not_causal)
+    dataset, scm, scm_output=data(args.data, not_causal,scaler)
     ml_model= locals()[f"{args.model}"](dataset,args.data)
 
     # get factuals
