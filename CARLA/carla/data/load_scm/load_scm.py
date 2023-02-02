@@ -1,6 +1,6 @@
 import numpy as np
 
-from .scm import sanity_3_lin,sanity_3_non_add,sanity_3_non_add_output,sanity_3_lin_output,sanity_3_non_lin_output, sanity_3_non_lin,economic_growth_china,economic_growth_china_output, nutrition_model, german_credit,german_credit_output
+from .scm import sanity_3_lin,sanity_3_non_add,sanity_3_non_add_output,sanity_3_lin_output,sanity_3_non_lin_output, sanity_3_non_lin,economic_growth_china,economic_growth_china_output, nutrition_model, nutrition_model_output,german_credit,german_credit_output
 scm_dict = {
     "sanity-3-lin": sanity_3_lin,
     "sanity-3-lin-output": sanity_3_lin_output,
@@ -10,7 +10,8 @@ scm_dict = {
     "sanity-3-non-add-output": sanity_3_non_add_output,
     #"adult":adult_model, 
     "credit-output":german_credit_output,
-    "nutrition":nutrition_model,
+    "nutrition": nutrition_model,
+    "nutrition-output":nutrition_model_output,
     "credit":german_credit,
     'economic-output':economic_growth_china_output,
     'economic':economic_growth_china,
