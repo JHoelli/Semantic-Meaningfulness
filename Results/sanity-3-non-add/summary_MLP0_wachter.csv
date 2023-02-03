@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP0,sanity-3-non-add,wachter,0.17152103559870555,0.17604107144283684,0.1957928802588997,0.2152833416400645

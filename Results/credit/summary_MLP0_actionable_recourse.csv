@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP0,credit,actionable_recourse,0.4204851752021564,0.42849513637170145,0.4366576819407008,0.42849513637170145

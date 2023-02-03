@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP0,sanity-3-non-lin,growingspheres,0.49612403100775193,0.49998497663866975,0.5038759689922481,0.49998497663866975
