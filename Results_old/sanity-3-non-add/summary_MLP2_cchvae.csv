@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP2,sanity-3-non-add,cchvae,0.3833333333333332,0.3898005187842167,0.3933333333333332,0.3840717525555753

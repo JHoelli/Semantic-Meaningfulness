@@ -1,2 +1,0 @@
-,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
-0,linear0,sanity-3-non-lin,causal_recourse,0.5,0.5,0.5,0.5

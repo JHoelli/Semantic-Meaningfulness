@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,forest0,credit,FeatureTweak,0.6277056277056278,0.41751894618803403,0.6536796536796537,0.40410739498233633

@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP2,economic,growingspheres,0.09181818181818181,0.09225817171358797,0.09272727272727273,0.0935789762360565
