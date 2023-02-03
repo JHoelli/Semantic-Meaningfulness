@@ -159,7 +159,7 @@ def Clue(mlmodel, scm, name, data):
     while keeping the same success rate'''
     return recourse_catalog.Clue(data, mlmodel, hyperparams=None)
 
-def Dice(mlmodel, scm, name, data):
+def Dice(ml_model, scm, name, data):
     '''
     Since DICE is able to compute a set of counterfactuals for a given instance, we only chose
 to generate one CE per input instance. We use a grid search for the proximity and diversity
