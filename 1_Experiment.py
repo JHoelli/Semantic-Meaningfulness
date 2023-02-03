@@ -215,7 +215,7 @@ def linear(dataset, name,hyperparams,i):
     Returns: 
         carla.XXX
     '''
-    training_params = hyperparams#{"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
+    training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
     ml_model = MLModelCatalog(
     dataset, model_type="linear", load_online=False, backend="pytorch"
     )
