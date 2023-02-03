@@ -8,6 +8,7 @@ from carla.data.causal_model import CausalModel
 from carla.models.catalog import MLModelCatalog
 from carla.models.negative_instances import predict_negative_instances
 from carla.data.catalog import CsvCatalog
+from carla.evaluation.catalog.success_rate import SuccessRate
 #from carla.recourse_methods.catalog import recourse_catalog
 #from carla.recourse_methods.catalog.roar.model import Roar
 from carla.recourse_methods.catalog.causal_recourse import (
@@ -344,9 +345,9 @@ if __name__ =='__main__':
     i=None
 
     hyperparams={
-        0: {"lr": 0.1, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
-        1: {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
-        2: {"lr": 0.001, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3],' num_of_classes':2}
+        #0: {"lr": 0.1, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
+        #1: {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
+        0: {"lr": 0.001, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3],' num_of_classes':2}
 
 
     }
@@ -398,6 +399,8 @@ if __name__ =='__main__':
         benchmark_wachter = Benchmark(ml_model, recourse, test_factual)
         evaluation_measures = [
         Sematic(ml_model, causal_graph_full=scm_output,causal_graph_small=scm),    
+        SuccessRate()
+
         ]
 
         results = benchmark_wachter.run_benchmark(evaluation_measures)
