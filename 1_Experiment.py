@@ -388,8 +388,8 @@ if __name__ =='__main__':
         ml_model= locals()[f"{args.model}"](dataset,args.data, hyperparams[hyper],hyper)
         i=hyper
         # get factuals
-        factuals = predict_negative_instances(ml_model, dataset.df)
-        test_factual_with_labels = factuals.iloc[:args.n_eval].reset_index(drop=True)
+        #factuals = predict_negative_instances(ml_model, dataset.df)
+        test_factual_with_labels = dataset.df.iloc[:args.n_eval].reset_index(drop=True)
         test_factual=test_factual_with_labels.copy()
 
         #Recourse Method
