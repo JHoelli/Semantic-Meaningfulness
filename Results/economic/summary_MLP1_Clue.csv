@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP1,economic,Clue,0.08080808080808081,0.0903461809090824,0.10101010101010102,0.0903461809090824
