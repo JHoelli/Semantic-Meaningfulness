@@ -134,11 +134,18 @@ class Sematic(Evaluation):
             for a in counterfactuals.index:
                 causal_label = get_pred_from_causal(self.causal_graph_full, counterfactuals.iloc[a], cf_label[a], self.threshold)
                 num.append(relationship_check(scm=self.causal_graph_small, values=counterfactuals.iloc[a]))
+                print('cf_label', cf_label[a])
                 if cf_label[a] == causal_label:
                     semantic.append([1])
                 else:
                     semantic.append([0])
-            return pd.DataFrame(np.vstack([semantic,num]).reshape(-1,2), columns=["semantic","correct_relationships"])
+            print(semantic)
+            df=pd.DataFrame([])
+            df['semantic']=np.array(semantic).reshape(-1)
+            df["correct_relationships"]=np.array(num).reshape(-1)
+
+            #pd.DataFrame(semantic, columns=['semantic']).to_csv('test.csv')
+            return df #pd.DataFrame(np.vstack([np.array(semantic).reshape(-1),np.array(num).reshape(-1)]).reshape(-1,2), columns=["semantic","correct_relationships"])
 
         else: 
             num=[]

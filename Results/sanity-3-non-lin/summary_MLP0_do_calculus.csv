@@ -1,2 +1,2 @@
 ,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
-0,MLP0,sanity-3-non-lin,do_calculus,0.836,0.3702755730533679,0.856,0.351089732119867
+0,MLP0,sanity-3-non-lin,do_calculus,0.532,0.49897494927100305,1.0,0.0

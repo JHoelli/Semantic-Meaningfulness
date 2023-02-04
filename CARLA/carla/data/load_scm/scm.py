@@ -340,8 +340,8 @@ def economic_growth_china_output():
         #Observed Variables
         # Electrictity Consumption
         "x4": lambda n_samples: n_samples,
-        # Economic Growth
-        "x5": lambda x7,x8,x12,x2,x11, x4,x1: 0.538 *x7 +0.426*x8+0.826*x12+ 0.293*x2+0.527 *x11+ 0.169 *x4+0.411*x1,
+        # Economic Growth #TODO THis is still not right ? 
+        "x5": lambda x7,x8,x12,x2,x11, x4,x1: int((0.538 *x7 +0.426*x8+0.826*x12+ 0.293*x2+0.527 *x11+ 0.169 *x4+0.411*x1) > 500000.000000),
         # Electrictiy Investment
         "x6": lambda x4,n_samples: 0.898*x4 +n_samples, #0.426*x4+ 7.984
         # Investment other Idustries
