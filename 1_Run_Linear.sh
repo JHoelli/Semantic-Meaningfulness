@@ -1,6 +1,9 @@
 #! /bin/bash
 
-#! /bin/bash
+# Cruds
+python 1_Experiment.py sanity-3-non-lin linear Cruds 250 both
+python 1_Experiment.py sanity-3-non-add linear Cruds 250 both
+python 1_Experiment.py economic linear Cruds 250 both
 
 # DO- Calculus
 python 1_Experiment.py sanity-3-lin linear do_calculus 250 both
@@ -59,11 +62,11 @@ python 1_Experiment.py economic linear actionable_recourse 250 both
 
 # CRUDS
 
-python 1_Experiment.py sanity-3-lin linear Cruds 250 both
-python 1_Experiment.py credit linear Cruds 250 both
-python 1_Experiment.py sanity-3-non-lin linear Cruds 250 both
-python 1_Experiment.py sanity-3-non-add linear Cruds 250 both
-python 1_Experiment.py economic linear Cruds 250 both
+#python 1_Experiment.py sanity-3-lin linear Cruds 250 both
+#python 1_Experiment.py credit linear Cruds 250 both
+#python 1_Experiment.py sanity-3-non-lin linear Cruds 250 both
+#python 1_Experiment.py sanity-3-non-add linear Cruds 250 both
+#python 1_Experiment.py economic linear Cruds 250 both
 
 # Dice
 python 1_Experiment.py sanity-3-lin MLP Dice 250 both
