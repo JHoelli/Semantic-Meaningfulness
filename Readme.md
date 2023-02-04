@@ -1,3 +1,14 @@
+## Install :
+Our Measure is based on the CARLA Framework (https://github.com/carla-recourse/CARLA). Therefore, in this repository a cloned version of CARLA can be found (./CARLA). We added the datasets to CARLA.
+Install everything with: 
+```
+    cd CARLA
+    pip install .
+```
+## Usage: 
+
+For Usage refer to .ipynb: Toy.ipynb.
+
 
 Call an Experiment: 
 
@@ -7,6 +18,11 @@ Call an Experiment:
 Datasets available: 
     - credit
     - sanity-3-lin
+    - sanity-3-non-lin
+    - sanity-3-non-add
+    - economic
+    - linear
+Dataset sanity-3-lin was already availabe in CARLA; The remaining Datasets and SCM with Output for the Semantic Meaningfull Measure were added here : ./CARLA/data/load_scm/scm. We indent to make a pull request to CARLA afte acceptance.
 
 Classifiers: 
     - MLP
@@ -25,9 +41,11 @@ cf:
     - causal_recourse (stuck for Credit!)
     - wachter
 
+## Replicate Results
+
 Run Preliminary Experiment Version: 
 ```
-sh 1_first_test_run.sh 
+sh 1_Run_Full.sh 
 ```
 If you want to run via more samples, just change 10 to smth else. Currently runs quiete fast. 
 

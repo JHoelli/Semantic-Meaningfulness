@@ -1,7 +1,5 @@
 ,semantic,correct_relationships,Success_Rate,model,CF,dataset
 0,0.0,0.0,1.0,linear0,actionable_recourse,sanity-3-lin
 1,0.0,0.0,,linear0,actionable_recourse,sanity-3-lin
-2,0.0,0.0,,linear0,actionable_recourse,sanity-3-lin
+2,1.0,1.0,,linear0,actionable_recourse,sanity-3-lin
 3,1.0,1.0,,linear0,actionable_recourse,sanity-3-lin
-4,1.0,1.0,,linear0,actionable_recourse,sanity-3-lin
-5,1.0,1.0,,linear0,actionable_recourse,sanity-3-lin

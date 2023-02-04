@@ -165,6 +165,7 @@ def Dice(ml_model, scm, name, data):
 to generate one CE per input instance. We use a grid search for the proximity and diversity
 weights. -> #TODO Better way
     '''
+    
     return recourse_catalog.Dice(ml_model, hyperparams=None)
 
 def FeatureTweak(mlmodel, scm, name, data):
@@ -219,9 +220,11 @@ def linear(dataset, name,hyperparams,i):
     ml_model = MLModelCatalog(
     dataset, model_type="linear", load_online=False, backend="pytorch"
     )
+
     if os.path.isfile(f'./Results/Model/Linear_{name}.pth'):
         model=torch.load(f'./Results/Model/Linear_{name}.pth')
         ml_model._model=model
+        #ml_model.data.continuous=dataset.df.drop(columns=['label']).columns
     else:
         ml_model.train(
         learning_rate=training_params["lr"],
@@ -239,6 +242,7 @@ def forest(dataset, name,hyperparams,i):
     TODO Test
     '''
     ml_model = MLModelCatalog(dataset, "forest", backend="sklearn", load_online=False)
+   
     if os.path.isfile(f'./Results/Model/Forest_{name}.pth'):
         model=torch.load(f'./Results/Model/Forest_{name}.pth')
         ml_model._model=model
@@ -261,7 +265,7 @@ def MLP(dataset, name,hyperparams,i):
     training_params =hyperparams #{"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
     #if name=='economic':
     #     training_params = {"lr": 0.002, "epochs": 10, "batch_size": 1024, "hidden_size": [18, 9, 3],' num_of_classes':2}
-    print
+   
 
     ml_model = MLModelCatalog(
     dataset, model_type="ann", load_online=False, backend="pytorch"
@@ -269,6 +273,7 @@ def MLP(dataset, name,hyperparams,i):
     if os.path.isfile(f'./Results/Model/MLP_{name}{i}.pth'):
         model=torch.load(f'./Results/Model/MLP_{name}{i}.pth')
         ml_model._model=model
+        #ml_model.data.continuous=dataset.df.drop(columns=['label']).columns
     else:
         ml_model.train(
         learning_rate=training_params["lr"],
@@ -347,7 +352,7 @@ if __name__ =='__main__':
     hyperparams={
         #0: {"lr": 0.1, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
         #1: {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]},
-        0: {"lr": 0.001, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3],' num_of_classes':2}
+        0: {"lr": 0.001, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
 
 
     }
@@ -399,7 +404,7 @@ if __name__ =='__main__':
         benchmark_wachter = Benchmark(ml_model, recourse, test_factual)
         evaluation_measures = [
         Sematic(ml_model, causal_graph_full=scm_output,causal_graph_small=scm),    
-        SuccessRate()
+        #SuccessRate()
 
         ]
 
