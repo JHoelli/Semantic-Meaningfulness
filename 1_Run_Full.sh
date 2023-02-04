@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # DO- Calculus
-#python 1_Experiment.py sanity-3-lin MLP do_calculus 250 both
+python 1_Experiment.py sanity-3-lin MLP do_calculus 250 both
 python 1_Experiment.py sanity-3-non-lin MLP do_calculus  250 both
 python 1_Experiment.py sanity-3-non-add MLP do_calculus 250 both
 python 1_Experiment.py sanity-3-lin linear do_calculus 250 both
