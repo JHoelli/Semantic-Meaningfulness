@@ -136,10 +136,16 @@ class Sematic(Evaluation):
                 num.append(relationship_check(scm=self.causal_graph_small, values=counterfactuals.iloc[a]))
                 print('causal_label', causal_label)
                 print('cf_label', cf_label[a])
-                if round(cf_label[a][0]) == causal_label:
-                    semantic.append([1])
-                else:
-                    semantic.append([0])
+                if hasattr(cf_label[a], "__len__"):
+                    if round(cf_label[a][0]) == causal_label:
+                        semantic.append([1])
+                    else:
+                        semantic.append([0])
+                else: 
+                    if round(cf_label[a]) == causal_label:
+                        semantic.append([1])
+                    else:
+                        semantic.append([0])
             print(semantic)
             df=pd.DataFrame([])
             df['semantic']=np.array(semantic).reshape(-1)
