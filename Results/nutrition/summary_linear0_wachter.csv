@@ -1,2 +1,2 @@
 ,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
-0,linear0,nutrition,wachter,1.0,0.0,0.5,0.0
+0,linear0,nutrition,wachter,1.0,0.0,0.5015,0.013610657588816202
