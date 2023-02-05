@@ -382,7 +382,7 @@ if __name__ =='__main__':
     scaler='Identity'
     if 'causal' in f'{args.CF}':
         not_causal=False
-    if 'economic' in f'{args.data}':
+    if 'economic' in f'{args.data}' or 'nutrition' in f'{args.data}':
         scaler='MinMax'
     #Load Dataset    
     dataset, scm, scm_output=data(args.data, not_causal,scaler)
