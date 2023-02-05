@@ -1,0 +1,2 @@
+,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
+0,MLP0,credit,cchvae,0.844,0.3628553430776512,0.8571428571428571,0.0
