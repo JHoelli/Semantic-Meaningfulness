@@ -18,6 +18,7 @@ for dataset in os.listdir('./Results'):
                 else: 
                     df= pd.concat([df,pd.read_csv(f'./Results/{dataset}/{file}') ])
             elif file.startswith('Res'):
+                print(file)
                 if j == 0: 
                     df_res=pd.read_csv(f'./Results/{dataset}/{file}')
                     valid+=len(df_res)
@@ -29,6 +30,11 @@ for dataset in os.listdir('./Results'):
                     j=j+1
                 else: 
                     df_res= pd.concat([df_res,pd.read_csv(f'./Results/{dataset}/{file}') ])
+                    valid+=len(df_res)
+                    length_complete+=250
+                    smo+=len(np.where(df_res['semantic']==1))
+                    print(df_res.columns)
+                    smr+=len(np.where(df_res['correct_relationships']==1.0))
 
 df.to_csv('./Results/summary.csv')
 df_res.to_csv('./Results/results.csv')
