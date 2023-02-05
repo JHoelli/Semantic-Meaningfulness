@@ -1,0 +1,16 @@
+,model,dataset,auc
+0,Forest,economic,0.8096
+1,Forest,credit,0.796
+2,Forest,sanity-3-lin,0.7956
+3,Forest,sanity-3-non-lin,0.9712
+4,Forest,sanity-3-non-add,0.8528
+5,Linear,economic,0.8276
+6,Linear,credit,0.75
+7,Linear,sanity-3-lin,0.9944
+8,Linear,sanity-3-non-lin,0.998
+9,Linear,sanity-3-non-add,0.9992
+10,MLP0,economic,0.9992
+11,MLP0,credit,0.9992
+12,MLP0,sanity-3-lin,0.9992
+13,MLP0,sanity-3-non-lin,0.9992
+14,MLP0,sanity-3-non-add,0.9992

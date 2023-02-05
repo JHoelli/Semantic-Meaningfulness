@@ -8,6 +8,7 @@ length_complete =0
 valid=0
 smo=0
 smr=0
+smoandsmr =0
 for dataset in os.listdir('./Results'):
     if os.path.isdir(f'./Results/{dataset}'):
         for file in os.listdir(f'./Results/{dataset}'):
@@ -33,10 +34,13 @@ for dataset in os.listdir('./Results'):
 valid+=len(df_res)
 smo+=len(df_res[df_res['semantic']==1 ])
 smr+=len(df_res[df_res['correct_relationships']==1.0 ])
+one=df_res[df_res['semantic']==1 ]
+smoandsmr += len(one[one['correct_relationships']==1.0 ])
+
 
 #smr+=len(np.where(df_res['correct_relationships']==1 ))
 #smo+=len(np.where(df_res['semantic']==1.0 ))
 
 df.to_csv('./Results/summary.csv')
 df_res.to_csv('./Results/results.csv')
-pd.DataFrame([[valid, length_complete, smo, smr]], columns=['valid', 'length_complete', 'smo', 'smr']).to_csv('./Results/Venn.csv')
+pd.DataFrame([[valid, length_complete, smo, smr,smoandsmr]], columns=['valid', 'length_complete', 'smo', 'smr','smosmr']).to_csv('./Results/Venn.csv')
