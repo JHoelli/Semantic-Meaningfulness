@@ -88,21 +88,18 @@ def _create_synthetic_data(scm, num_samples,fuzzy=False):
     elif leng==7:
         #w = np.ones((endogenous_variables.shape[0], 1))
         #predictions= 1 / (1 + np.exp(-0.3/(-np.dot(endogenous_variables['x4'],w)-np.dot(endogenous_variables['x5'],w)+np.dot(endogenous_variables['x6'],w)+np.dot(endogenous_variables['x7'],w)+np.dot(endogenous_variables['x6'],w)*np.dot(endogenous_variables['x7'],w)) ) )
-         print(endogenous_variables['x4'].shape)
-         predictions= 1 / (1 + np.exp(-0.3/(-endogenous_variables['x4']-endogenous_variables['x5']+endogenous_variables['x6']+endogenous_variables['x7']+endogenous_variables['x6']*endogenous_variables['x7']) ) )
+        print(endogenous_variables['x4'].shape)
+        predictions= 1 / (1 + np.exp(-0.3/(-endogenous_variables['x4']-endogenous_variables['x5']+endogenous_variables['x6']+endogenous_variables['x7']+endogenous_variables['x6']*endogenous_variables['x7']) ) )
     elif leng==11:
         value=  0.538 *endogenous_variables['x7'] +0.426*endogenous_variables['x8']+0.826*endogenous_variables['x12']+ 0.293*endogenous_variables['x2']+0.527 *endogenous_variables['x11']+ 0.169 *endogenous_variables['x4']+0.411*endogenous_variables['x1']
         predictions = value > 500000.000000
         predictions=predictions.astype(int)
     elif leng==8:
         predictions=-0.21*endogenous_variables['x2']+-0.59 * endogenous_variables['x1'] + 0.03 *endogenous_variables['x8']- 0.04* endogenous_variables['x7']+0.02*endogenous_variables['x5']+ 0.1*endogenous_variables['x4']
-
-    
+        predictions = predictions > -6.5
+        predictions=predictions.astype(int)
     #if not 0.20 < np.std(predictions) < 0.42:
     #    raise ValueError(f"std of labels is strange: {np.std(predictions)}")
-
-    # sample labels from class probabilities in predictions
-    print('fuzzy', fuzzy)
     if fuzzy:
         uniform_rv = np.random.rand(endogenous_variables.shape[0], 1)
         #print('randsom',uniform_rv.shape)
@@ -110,6 +107,7 @@ def _create_synthetic_data(scm, num_samples,fuzzy=False):
         uniform_rv = np.ones((endogenous_variables.shape[0], 1))*0.5
     print('threshold',uniform_rv.shape)
     print('predictions',predictions)
+    print('Meadian',np.median(predictions,axis=0))
         #print('threshold',uniform_rv)
     if type(predictions)==pd.DataFrame or type(predictions)==pd.Series:
         predictions=predictions.values.reshape(-1,1)
