@@ -60,9 +60,3 @@ Aggregate Data:
 python 2_Summarize_Experiment_Results.py 
 ```
 Checkout Plot and Visualization of the current reults in: ./Results/Analyzing.ipynb
-
-TODOS: 
-- [ ] How to cope with huge number of Parameters of CF Methods --> Preposition: set to original paper parameter
-- [ ] What else to logg for evaluation ? Model accuracies and confusion matrix?
-- [ ] Why are sematic and relation ship quiete close together ? --> can we conclude that relationship checks are a sufficient approx.? --> How would could we design an experiment?
-- [ ] Compare out Do-Calculus with Defintion of Pearl
