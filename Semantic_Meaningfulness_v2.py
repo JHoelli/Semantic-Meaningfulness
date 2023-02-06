@@ -16,10 +16,7 @@ def get_abduction_noise(
 
 def relationship_check(scm, values, precision = 4):
     '''
-    TODO 
-    * Detailling
-    * Significance
-    * What to do if first level is inccorect ? use intervened value ?  
+
     '''
 
     # Default see all relationships as met    
@@ -45,11 +42,7 @@ def relationship_check(scm, values, precision = 4):
             node_sample = structural_equation(noise, *[values[p] for p in parents])
             value = node_sample
             print(value)
-            #value=scm.structural_equations_np[node](0,
-            #    *[endogenous_variables[p] for p in parents],
-            #)   
-            #print('Calculated Value',value)
-            #print('CF Value', endogenous_variables[node])
+    
             if round(value,precision) != round(endogenous_variables[node],precision):
                 relationships[node]=0 
         num_relationship_tested += 1
@@ -60,12 +53,11 @@ def get_pred_from_causal(scm, values, cf_label, threshold):
     Infers the prediction from the causal model. This is implemented accoring to Karimi et al .: 
     Assumption: Couterfactual returns a valued for every endogenous variable ! 
     Assumption: Output Node value is not contained in CF!
-    #TODO does this Assumption make sense?
     Attributes: 
         scm: structural causal model 
         values: The counterfactual 
         cf_label: The counterfactual label 
-        mapping_dict: variable name mapping betwenn CF and causal model
+        threshold: The classification threshold.
     Returns Label
     '''
 
@@ -78,8 +70,7 @@ def get_pred_from_causal(scm, values, cf_label, threshold):
             value=scm.structural_equations_np[node](
                 *[endogenous_variables[p] for p in parents]
             )
-            print('probability',value)
-            #TODO ELIMINATE THIS
+
             try:
                 endogenous_variables[node]= value[0] 
             except:
@@ -88,7 +79,6 @@ def get_pred_from_causal(scm, values, cf_label, threshold):
     predictions= endogenous_variables[output_node]
     uniform_rv = threshold
     labels = int(uniform_rv < predictions)
-    print('labels', labels)
     
     return labels
 
@@ -99,9 +89,10 @@ class Sematic(Evaluation):
     Relationship and Outputwise. Useable for full structural causal models and partly structural causal models.
     Attributes: 
         ml_model: Machine Learning Model
-        causal_graph: ground truth causal graph
-        mapping_dict: name mapping
-    Returns: Consistency
+        causal_graph_full: ground truth causal graph, with known output
+        causal_graph_small: ground truth causal graph, only relationships
+        threshold: Classification Threshold
+    Returns: pd.DataFrame()
     """
 
     def __init__(self, ml_model, causal_graph_full=None,causal_graph_small=None,  threshold=0.5 ):
@@ -124,18 +115,6 @@ class Sematic(Evaluation):
             for a in counterfactuals.index:
                 causal_label = get_pred_from_causal(self.causal_graph_full, counterfactuals.iloc[a], cf_label[a], self.threshold)
 
-                if cf_label[a] == causal_label:
-                    semantic.append([1])
-                else:
-                    semantic.append([0])
-            return pd.DataFrame(semantic, columns=["semantic"])
-        elif self.causal_graph_full is not None and self.causal_graph_small is not None:
-            num=[]
-            for a in counterfactuals.index:
-                causal_label = get_pred_from_causal(self.causal_graph_full, counterfactuals.iloc[a], cf_label[a], self.threshold)
-                num.append(relationship_check(scm=self.causal_graph_small, values=counterfactuals.iloc[a]))
-                print('causal_label', causal_label)
-                print('cf_label', cf_label[a])
                 if hasattr(cf_label[a], "__len__"):
                     if round(cf_label[a][0]) == causal_label:
                         semantic.append([1])
@@ -146,13 +125,27 @@ class Sematic(Evaluation):
                         semantic.append([1])
                     else:
                         semantic.append([0])
-            print(semantic)
+            return pd.DataFrame(semantic, columns=["semantic"])
+        elif self.causal_graph_full is not None and self.causal_graph_small is not None:
+            num=[]
+            for a in counterfactuals.index:
+                causal_label = get_pred_from_causal(self.causal_graph_full, counterfactuals.iloc[a], cf_label[a], self.threshold)
+                num.append(relationship_check(scm=self.causal_graph_small, values=counterfactuals.iloc[a]))
+                if hasattr(cf_label[a], "__len__"):
+                    if round(cf_label[a][0]) == causal_label:
+                        semantic.append([1])
+                    else:
+                        semantic.append([0])
+                else: 
+                    if round(cf_label[a]) == causal_label:
+                        semantic.append([1])
+                    else:
+                        semantic.append([0])
+        
             df=pd.DataFrame([])
             df['semantic']=np.array(semantic).reshape(-1)
             df["correct_relationships"]=np.array(num).reshape(-1)
-
-            #pd.DataFrame(semantic, columns=['semantic']).to_csv('test.csv')
-            return df #pd.DataFrame(np.vstack([np.array(semantic).reshape(-1),np.array(num).reshape(-1)]).reshape(-1,2), columns=["semantic","correct_relationships"])
+            return df 
 
         else: 
             num=[]

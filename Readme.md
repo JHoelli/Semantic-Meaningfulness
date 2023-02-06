@@ -1,5 +1,11 @@
+# Semantic Meaningfulness: Evaluating counterfactual approaches for real world plausibility
+
+This repository contains the code for our paper "Semantic Meaningfulness: Evaluating counterfactual approaches for real world plausibility". We benchmark the semantic meaningfulness of known Counterfactual Approaches. 
+The implementation in here allows to replicate the experiments, and the benchmarking of (new) counterfactual approaches. For easy usage of out metric, refer to Benchmarking_Output_Causal.ipynb.
+
 ## Install :
 Our Measure is based on the CARLA Framework (https://github.com/carla-recourse/CARLA). Therefore, in this repository a cloned version of CARLA can be found (./CARLA). We added the datasets to CARLA.
+Be aware that CARLA currently only works with Python 3.7..
 Install everything with: 
 ```
     cd CARLA
@@ -7,7 +13,7 @@ Install everything with:
 ```
 ## Usage: 
 
-For Usage refer to .ipynb: Toy.ipynb.
+For Usage refer to .ipynb: Benchmarking_Output_Causal.ipynb.
 
 
 Call an Experiment: 

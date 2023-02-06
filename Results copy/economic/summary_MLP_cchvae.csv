@@ -1,2 +1,0 @@
-,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
-0,MLP,economic,cchvae,0.10727272727272727,0.11309324756424718,0.09727272727272729,0.099797315255629
