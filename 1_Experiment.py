@@ -18,7 +18,6 @@ from carla.recourse_methods.catalog.causal_recourse import (
 )
 #from carla.data.causal_model.synthethic_data import SCMDataset
 from carla.recourse_methods import GrowingSpheres
-from causal_recourse_do_calculus.model import CausalRecourse_DoCalculus
 from carla import Benchmark
 import numpy as np 
 import pandas as pd
@@ -105,20 +104,6 @@ def focus(model,scm,name, data):
 
     return recourse_catalog.FOCUS(model, hyperparams)
 
-def do_calculus(mlmodel,scm, name, data):
-    import causal_recourse_do_calculus.constraints_do_calculus as constraints_do
-    import causal_recourse_do_calculus.samplers as samplers
-    from causal_recourse_do_calculus.action_set import get_discretized_action_sets
-    from causal_recourse_do_calculus.cost import action_set_cost
-    hyperparams= {
-        "optimization_approach": "brute_force",
-        "num_samples": 10,
-        "scm": scm,
-        "constraint_handle_do": constraints_do.point_constraint,
-        "sampler_handle": samplers.sample_true_m0,
-    }
-
-    return CausalRecourse_DoCalculus(mlmodel,hyperparams)
 
 def cchvae(mlmodel,scm, name, data):
     '''
