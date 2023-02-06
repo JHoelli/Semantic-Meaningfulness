@@ -1,5 +1,6 @@
 import itertools
 from typing import Dict
+from causal_recourse_do_calculus.sampler import Sampler
 
 import numpy as np
 import pandas as pd
@@ -208,6 +209,8 @@ class CausalRecourse_DoCalculus():
             min_action_set, _, cf = self.compute_optimal_action_set(
                 factual_instance, self._constraint_handle_do, self._sampler_handle
             )
+            sampler = Sampler(self._scm)
+            cf_instance = sampler.sample(1, factual_instance, min_action_set, self._sampler_handle)
             #print('min_action_set', min_action_set)
             #print('computation finished')
             #cf = _series_plus_dict(factual_instance, min_action_set)
@@ -216,9 +219,9 @@ class CausalRecourse_DoCalculus():
             #print('CF TO Factual instacne No', index)
             print('CF', cf)
             try:
-                cfs.append(cf.iloc[0])
+                cfs.append(cf_instance.iloc[0])
             except: 
-                cfs.append(cf)
+                cfs.append(cf_instance)
 
             print('CFS',cfs)
 
