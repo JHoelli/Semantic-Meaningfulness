@@ -1,2 +1,0 @@
-,model,dataset,CF,semantic_mean,semantic_std,relationship_mean,relationship_std
-0,MLP0,credit,Clue,0.9393939393939394,0.2386062992124791,0.2857142857142856,1.1102230246251565e-16
