@@ -46,6 +46,8 @@ def relationship_check(scm, values, precision = 4):
             if round(value,precision) != round(endogenous_variables[node],precision):
                 relationships[node]=0 
         num_relationship_tested += 1
+    print(relationships)
+    print(num_relationship_tested)
     return [np.sum(relationships.iloc[0])/num_relationship_tested]
 
 def get_pred_from_causal(scm, values, cf_label, threshold):
