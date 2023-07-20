@@ -10,7 +10,7 @@ This repository consits of two branches:
 For a step to step guide on how to run the eperiments, we refer the reader to ./experiments/Readme.md.
 
 ## Install:
-Due to its dependency on [CARLA](https://github.com/carla-recourse/CARLA)
+Due to its dependency on [CARLA](https://github.com/carla-recourse/CARLA) our code works best with python 3.7.
 Clone this repository and install via pip. 
 
 ```shell
