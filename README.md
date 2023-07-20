@@ -10,7 +10,10 @@ For a step to step guide on how to run the eperiments, we refer the reader to ./
 
 ## Install:
 Due to its dependency on [CARLA](https://github.com/carla-recourse/CARLA) our code works best with python 3.7.
-Clone this repository and install via pip. 
+```shell
+pip install https://github.com/JHoelli/Semantic-Meaningfulness/archive/refs/heads/master.zip
+```
+or clone this repository and install via pip. 
 
 ```shell
 pip install . 
@@ -55,7 +58,7 @@ ml_model.train(
 ```
 
 ### Define Recourse: 
-
+```python
 
 '''Causal Recourse Model '''
 from carla.recourse_methods.catalog.causal_recourse import (
@@ -73,7 +76,7 @@ hyperparams = {
 
 recourse=CausalRecourse(ml_model, hyperparams)
 
-
+```
 
 
 ### Get Full SCM 
