@@ -10,14 +10,15 @@ This repository consits of two branches:
 For a step to step guide on how to run the eperiments, we refer the reader to ./experiments/Readme.md.
 
 ## Install:
+Due to its dependency on [CARLA](https://github.com/carla-recourse/CARLA)
 Clone this repository and install via pip. 
 
 ```shell
 pip install . 
 ```
 
-## Usage:
-For the usage refer to Benchmarking_Output_Causal.ipynb.
+## Usage with the CARLA - Counterfactual And Recourse Library :
+For details on the usage refer to [1_Benchmarking_CARLA.ipynb](1_Benchmarking_CARLA.ipynb).
 
 ### Import the Packages and Place a reference to the models provided by out paper
 ```python
@@ -54,6 +55,27 @@ ml_model.train(
 
 ```
 
+### Define Recourse: 
+
+
+'''Causal Recourse Model '''
+from carla.recourse_methods.catalog.causal_recourse import (
+    CausalRecourse,
+    constraints,
+    samplers,
+)
+hyperparams = {
+    "optimization_approach": "brute_force",
+    "num_samples": 10,
+    "scm": scm,
+    "constraint_handle": constraints.point_constraint,
+    "sampler_handle": samplers.sample_true_m0,
+}
+
+recourse=CausalRecourse(ml_model, hyperparams)
+
+
+
 
 ### Get Full SCM 
 ```python
@@ -74,4 +96,32 @@ evaluation_measures = [
 results = benchmark.run_benchmark(evaluation_measures)
 
 ```
+## Stand Alone Usage
+
+Find Details in [2_Standalone.ipynb](2_Standalone.ipynb).
+
+```python 
+
+import Semantic_Meaningfulness 
+import carla
+carla.data.causal_model=Semantic_Meaningfulness.carla_adaptions.causal_model
+
+causal_graph_small = carla.data.causal_model.CausalModel("sanity-3-lin")
+causal_graph_full = carla.data.causal_model.CausalModel("sanity-3-lin-output")
+metric=Semantic(ml_model, causal_graph_full, causal_graph_small)
+metric.evaluate(factuals, counterfactuals)
+
+```
 # Citation
+If you use this work please consider citing it : 
+```
+@inproceedings{H{\"o}llig2023Sem, 
+organization={Springer}
+year = {2023}, 
+booktitle={1st International Conference on eXplainable Artificial Intelligence (xAI 2023)},
+author = {Jacqueline H{\"o}llig and Aniek F. Markus and Jef de Slegte and Prachi Bagave}, 
+title = {Semantic Meaningfulness: Evaluating Counterfactual Approaches for Real World Plausibility and Feasibility} 
+} 
+
+```
+If you use it in combination with CARLA or a specific Counterfactual Method, please consider citing those works too. 
