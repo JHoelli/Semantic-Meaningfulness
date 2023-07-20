@@ -6,7 +6,7 @@ This repository consits of two branches:
 - main (the current branch): with a minimal pip-installable version of the metric 
 - experiment: the original code from the experiments in the paper
 
-For a step to step guide on how to run the eperiments, we refer the reader to ./experiments/Readme.md.
+For a step to step guide on how to run the eperiments, we refer the reader to the branch [experiments](https://github.com/JHoelli/Semantic-Meaningfulness/tree/experiments).
 
 ## Install:
 Due to its dependency on [CARLA](https://github.com/carla-recourse/CARLA) our code works best with python 3.7.
