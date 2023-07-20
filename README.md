@@ -1,7 +1,6 @@
 # Semantic Meaningfulness: Evaluating counterfactual approaches for real world plausibility
 
 This repository contains the code for our paper "Semantic Meaningfulness: Evaluating counterfactual approaches for real world plausibility". We benchmark the semantic meaningfulness of known Counterfactual Approaches. 
-The implementation in here allows to replicate the experiments, and the benchmarking of (new) counterfactual approaches. For easy usage of out metric, refer to Benchmarking_Output_Causal.ipynb.
 
 This repository consits of two branches: 
 - main (the current branch): with a minimal pip-installable version of the metric 
