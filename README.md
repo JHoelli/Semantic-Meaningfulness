@@ -4,9 +4,9 @@ This repository contains the code for our paper "Semantic Meaningfulness: Evalua
 
 This repository consits of two branches: 
 - main (the current branch): with a minimal pip-installable version of the metric 
-- experiment: the original code from the experiments in the paper
+- [experiments](https://github.com/JHoelli/Semantic-Meaningfulness/tree/experiments): the original code from the experiments in the paper
 
-For a step to step guide on how to run the eperiments, we refer the reader to the branch [experiments](https://github.com/JHoelli/Semantic-Meaningfulness/tree/experiments).
+For a step to step guide on how to run the experiments, we refer the reader to the branch [experiments](https://github.com/JHoelli/Semantic-Meaningfulness/tree/experiments).
 
 ## Install:
 Due to its dependency on [CARLA](https://github.com/carla-recourse/CARLA) our code works best with python 3.7.
