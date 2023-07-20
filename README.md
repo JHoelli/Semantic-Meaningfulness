@@ -63,12 +63,6 @@ scm_output=carla.data.causal_model.CausalModel("sanity-3-lin-output")
 ### Run Benchmark 
 ```python 
 from Semantic_Meaningfulness.Semantic_Meaningfulness import Semantic
-mapping_dict={ 
-      'u1': 'x1',
-      'u2': 'x2',
-    'u3': 'x3',
-      }
-
 benchmark = Benchmark(ml_model, recourse, test_factual)
 
 
@@ -80,3 +74,4 @@ evaluation_measures = [
 results = benchmark.run_benchmark(evaluation_measures)
 
 ```
+# Citation
