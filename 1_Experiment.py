@@ -1,24 +1,11 @@
 import argparse
 import importlib
-import Semantic_Meaningfulness_v2
-from Semantic_Meaningfulness_v2 import Sematic
-importlib.reload(Semantic_Meaningfulness_v2)
-import carla.recourse_methods.catalog as recourse_catalog
-from carla.data.causal_model import CausalModel
-from carla.models.catalog import MLModelCatalog
-from carla.models.negative_instances import predict_negative_instances
-from carla.data.catalog import CsvCatalog
-from carla.evaluation.catalog.success_rate import SuccessRate
-#from carla.recourse_methods.catalog import recourse_catalog
-#from carla.recourse_methods.catalog.roar.model import Roar
-from carla.recourse_methods.catalog.causal_recourse import (
-    CausalRecourse,
-    constraints,
-    samplers,
-)
-#from carla.data.causal_model.synthethic_data import SCMDataset
-from carla.recourse_methods import GrowingSpheres
-from carla import Benchmark
+import Semantic_Meaningfulness
+from Semantic_Meaningfulness.Semantic_Meaningfulness import Semantic
+import Semantic_Meaningfulness 
+
+import carla
+carla.data.causal_model=Semantic_Meaningfulness.carla_adaptions.causal_model
 import numpy as np 
 import pandas as pd
 import torch
@@ -46,7 +33,7 @@ def wachter(ml_model,scm, name, data):
     "norm":1,
     "lambda_param":0.01
      }
-    return recourse_catalog.wachter.model.Wachter(ml_model, hyperparams)
+    return carla.recourse_methods.catalog.wachter.model.Wachter(ml_model, hyperparams)
 
 
 def causal_recourse(ml_model,scm,name, data):
@@ -63,10 +50,10 @@ def causal_recourse(ml_model,scm,name, data):
     "optimization_approach": "brute_force",
     "num_samples": 10, #used to be 10
     "scm": scm,
-    "constraint_handle": constraints.point_constraint,
-    "sampler_handle": samplers.sample_true_m0,
+    "constraint_handle": carla.recourse_methods.catalog.causal_recourse.constraints.point_constraint,
+    "sampler_handle": carla.recourse_methods.catalog.causal_recourse.samplers.sample_true_m0,
     }
-    causal_recourse = CausalRecourse(ml_model, hyperparams)
+    causal_recourse =carla.recourse_methods.catalog.causal_recourse.CausalRecourse(ml_model, hyperparams)
     return causal_recourse
 
 def growingspheres(model,scm,name, data):
@@ -79,7 +66,7 @@ def growingspheres(model,scm,name, data):
     Return: 
         carla.recourse...
     '''
-    return GrowingSpheres(model)
+    return carla.recourse_methods.GrowingSpheres(model)
 
 def focus(model,scm,name, data):
     '''
@@ -102,7 +89,7 @@ def focus(model,scm,name, data):
     "distance_func": "l1",
     }
 
-    return recourse_catalog.FOCUS(model, hyperparams)
+    return carla.recourse_methods.catalog.FOCUS(model, hyperparams)
 
 
 def cchvae(mlmodel,scm, name, data):
@@ -127,7 +114,7 @@ def cchvae(mlmodel,scm, name, data):
         },
         }
 
-    cchvae = recourse_catalog.CCHVAE(mlmodel, hyperparams)
+    cchvae = carla.recourse_methods.catalog.CCHVAE(mlmodel, hyperparams)
     return cchvae
 # Actionable Recourse (AR)
 def actionable_recourse(mlmodel,scm, name, data):
@@ -135,14 +122,14 @@ def actionable_recourse(mlmodel,scm, name, data):
     AR does not always find a counterfactual example. The probability of finding one rises for a high size of flip set.
     https://carla-counterfactual-and-recourse-library.readthedocs.io/en/latest/recourse.html#module-recourse_methods.catalog.actionable_recourse.model
     '''
-    return recourse_catalog.ActionableRecourse(mlmodel,hyperparams=None)
+    return carla.recourse_methods.catalog.ActionableRecourse(mlmodel,hyperparams=None)
     
 # Counterfactual Latent Uncertainty Explanations (CLUE)
 def Clue(mlmodel, scm, name, data):
     ''' We use the default hyperparameters from [ 3], which are set as a function of the data set
     dimension d. Performing hyperparameter search did not yield results that were improving distances
     while keeping the same success rate'''
-    return recourse_catalog.Clue(data, mlmodel, hyperparams=None)
+    return carla.recourse_methods.catalog.Clue(data, mlmodel, hyperparams=None)
 
 def Dice(ml_model, scm, name, data):
     '''
@@ -151,13 +138,13 @@ to generate one CE per input instance. We use a grid search for the proximity an
 weights. -> #TODO Better way
     '''
     
-    return recourse_catalog.Dice(ml_model, hyperparams=None)
+    return carla.recourse_methods.catalog.Dice(ml_model, hyperparams=None)
 
 def FeatureTweak(mlmodel, scm, name, data):
     '''
     eps=0.1
     '''
-    return recourse_catalog.FeatureTweak(mlmodel)
+    return carla.recourse_methods.catalog.FeatureTweak(mlmodel)
 
 
 
@@ -165,7 +152,7 @@ def Cruds(mlmodel, scm, name, data):
     '''
     Parameters from Cruds Paper
     '''
-    return recourse_catalog.crud.model.CRUD(mlmodel, hyperparams={"data_name":name, "optimizer": "ADAM","vae_params": {
+    return carla.recourse_methods.catalog.crud.model.CRUD(mlmodel, hyperparams={"data_name":name, "optimizer": "ADAM","vae_params": {
             "layers": [data.df.shape[-1]-1,64,1],
             "train": True,
             "epochs": 500,
@@ -177,14 +164,14 @@ def Cruds(mlmodel, scm, name, data):
 #    '''
 #    Currently Ignored, needs Immutable Features to be set !
 #    '''
-#    return recourse_catalog.Face(mlmodel, hyperparams={"mode":"knn","fraction":0.5})
+#    return carla.recourse_methods.catalog.recourse_catalog.Face(mlmodel, hyperparams={"mode":"knn","fraction":0.5})
 #def Roar(mlmodel, scm, name, data):
 #TODO not found in library
 #    return Roar(mlmodel)
 
 #def Revise(mlmodel, scm, name, data):
      #TODO WHere ? --Throws errie
-#    return recourse_catalog.Revise(mlmodel, data)
+#    return carla.recourse_methods.catalog.recourse_catalog.Revise(mlmodel, data)
 
 
 
@@ -202,7 +189,7 @@ def linear(dataset, name,hyperparams,i):
         carla.XXX
     '''
     training_params = {"lr": 0.01, "epochs": 10, "batch_size": 16, "hidden_size": [18, 9, 3]}
-    ml_model = MLModelCatalog(
+    ml_model = Semantic_Meaningfulness.carla_adaptions.MLModelCatalog.MLModelCatalog(
     dataset, model_type="linear", load_online=False, backend="pytorch"
     )
 
@@ -226,7 +213,7 @@ def forest(dataset, name,hyperparams,i):
     '''
     TODO Test
     '''
-    ml_model = MLModelCatalog(dataset, "forest", backend="sklearn", load_online=False)
+    ml_model = Semantic_Meaningfulness.carla_adaptions.MLModelCatalog.MLModelCatalog(dataset, "forest", backend="sklearn", load_online=False)
    
     if os.path.isfile(f'./Results/Model/Forest_{name}.pth'):
         model=torch.load(f'./Results/Model/Forest_{name}.pth')
@@ -252,7 +239,7 @@ def MLP(dataset, name,hyperparams,i):
     #     training_params = {"lr": 0.002, "epochs": 10, "batch_size": 1024, "hidden_size": [18, 9, 3],' num_of_classes':2}
    
 
-    ml_model = MLModelCatalog(
+    ml_model = Semantic_Meaningfulness.carla_adaptions.MLModelCatalog.MLModelCatalog(
     dataset, model_type="ann", load_online=False, backend="pytorch"
     )
     if os.path.isfile(f'./Results/Model/MLP_{name}{i}.pth'):
@@ -280,8 +267,9 @@ def data(name, not_causal=True, scaler='Identity'):
     Returns: 
         (dataset, scm, scm_output): returns Dataset, Structural Causal Model and Structural Causal Model with output Layer.
     '''
-    scm = CausalModel(f"{name}")
-    scm_output = CausalModel(f"{name}-output")
+    print(scaler)
+    scm = carla.data.causal_model.CausalModel(f"{name}")
+    scm_output = carla.data.causal_model.CausalModel(f"{name}-output")
     if not os.path.isdir(f'./data/{name}'):
         os.mkdir(f'./data/{name}')
     if not os.path.isfile(f'./data/{name}/{name}.csv'):
@@ -298,7 +286,7 @@ def data(name, not_causal=True, scaler='Identity'):
             dataset = pd.read_csv(f'./data/{name}/{name}.csv')
             #TODO Better way for defining continous varaibles ?
             continuous_wachter = dataset.drop(columns=['label']).columns
-            dataset = CsvCatalog(file_path=f'./data/{name}/{name}.csv',
+            dataset = carla.data.catalog.CsvCatalog(file_path=f'./data/{name}/{name}.csv',
                      continuous=continuous_wachter,
                      categorical=[],
                      immutables=[],
@@ -309,7 +297,7 @@ def data(name, not_causal=True, scaler='Identity'):
             dataset = pd.read_csv(f'./data/{name}/{name}.csv')
             #TODO Better way for defining continous varaibles ?
             continuous_wachter = dataset.drop(columns=['label']).columns
-            dataset = CsvCatalog(file_path=f'./data/{name}/{name}.csv',
+            dataset = carla.data.catalog.CsvCatalog(file_path=f'./data/{name}/{name}.csv',
                      continuous=continuous_wachter,
                      categorical=[],
                      immutables=[],
@@ -320,7 +308,7 @@ def data(name, not_causal=True, scaler='Identity'):
             dataset = pd.read_csv(f'./data/{name}/{name}.csv')
             continuous_wachter = dataset.drop(columns=['label']).columns
             #TODO Does Scaling Method Idendity make sense ? 
-            dataset = CsvCatalog(file_path=f'./data/{name}/{name}.csv',
+            dataset = carla.data.catalog.CsvCatalog(file_path=f'./data/{name}/{name}.csv',
                      continuous=continuous_wachter,
                      categorical=[],
                      immutables=[],
@@ -378,7 +366,8 @@ if __name__ =='__main__':
         ml_model= locals()[f"{args.model}"](dataset,args.data, hyperparams[hyper],hyper)
         i=hyper
         # get factuals
-        factuals = predict_negative_instances(ml_model, dataset.df)
+        from carla.models.negative_instances import predict_negative_instances
+        factuals =predict_negative_instances(ml_model, dataset.df)
         test_factual_with_labels = factuals.iloc[:args.n_eval].reset_index(drop=True)
         test_factual=test_factual_with_labels.copy()
 
@@ -386,9 +375,9 @@ if __name__ =='__main__':
         recourse= locals()[f"{args.CF}"](ml_model,scm,args.data,dataset)
     
         # Benchmarking
-        benchmark_wachter = Benchmark(ml_model, recourse, test_factual)
+        benchmark_wachter = carla.Benchmark(ml_model, recourse, test_factual)
         evaluation_measures = [
-        Sematic(ml_model, causal_graph_full=scm_output,causal_graph_small=scm),    
+        Semantic(ml_model, causal_graph_full=scm_output,causal_graph_small=scm),    
         #SuccessRate()
 
         ]
@@ -412,7 +401,3 @@ if __name__ =='__main__':
         summary['relationship_mean']=np.mean(results['correct_relationships'])
         summary['relationship_std']=np.std(results['correct_relationships'])
         summary.to_csv(f'./Results/{args.data}/summary_{args.model}{hyper}_{args.CF}.csv')
-
-
-
-
