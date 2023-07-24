@@ -1,6 +1,6 @@
-# Semantic Meaningfulness: Evaluating Counterfactual Approaches for Real World Plausibility and Feasibilit
+# Semantic Meaningfulness: Evaluating Counterfactual Approaches for Real World Plausibility and Feasibility
 
-This repository contains the code for our paper "Semantic Meaningfulness: Evaluating Counterfactual Approaches for Real World Plausibility and Feasibilit". We benchmark the semantic meaningfulness of known Counterfactual Approaches. 
+This repository contains the code for our paper "Semantic Meaningfulness: Evaluating Counterfactual Approaches for Real World Plausibility and Feasibility". We benchmark the semantic meaningfulness of known Counterfactual Approaches. 
 
 This repository consits of two branches: 
 - main (the current branch): with a minimal pip-installable version of the metric 
